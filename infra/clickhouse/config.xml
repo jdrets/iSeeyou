@@ -1,0 +1,22 @@
+<clickhouse>
+    <!-- Bind only on all interfaces in dev. In prod restrict to specific IPs. -->
+    <listen_host>0.0.0.0</listen_host>
+
+    <!-- Max connections tuned for moderate dev resources -->
+    <max_connections>100</max_connections>
+    <max_concurrent_queries>50</max_concurrent_queries>
+
+    <!-- Async inserts — clave para la ingesta masiva desde ingest-api -->
+    <!-- El servidor acumula filas durante max_data_size o timeout y las escribe en un solo batch -->
+    <async_insert_max_data_size>10485760</async_insert_max_data_size>  <!-- 10 MB -->
+    <async_insert_busy_timeout_ms>200</async_insert_busy_timeout_ms>
+
+    <!-- Memoria máxima por query (512 MB para dev, subir en prod) -->
+    <max_memory_usage>536870912</max_memory_usage>
+
+    <!-- Logs menos verbosos en dev -->
+    <logger>
+        <level>warning</level>
+        <console>1</console>
+    </logger>
+</clickhouse>

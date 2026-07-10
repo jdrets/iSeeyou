@@ -31,7 +31,7 @@ CREATE TABLE seeyou.errors
 ENGINE = MergeTree()
 PARTITION BY toYYYYMM(date)
 ORDER BY (date, timestamp)
-TTL date + INTERVAL 90 DAY
+TTL date + INTERVAL 30 DAY
 SETTINGS index_granularity = 8192;
 
 CREATE TABLE seeyou.web_vitals
@@ -52,7 +52,7 @@ CREATE TABLE seeyou.web_vitals
 ENGINE = MergeTree()
 PARTITION BY toYYYYMM(date)
 ORDER BY (date, metric_name, timestamp)
-TTL date + INTERVAL 90 DAY
+TTL date + INTERVAL 30 DAY
 SETTINGS index_granularity = 8192;
 
 CREATE TABLE seeyou.events
@@ -70,5 +70,5 @@ CREATE TABLE seeyou.events
 ENGINE = MergeTree()
 PARTITION BY toYYYYMM(date)
 ORDER BY (date, event_type, timestamp)
-TTL date + INTERVAL 90 DAY
+TTL date + INTERVAL 30 DAY
 SETTINGS index_granularity = 8192;

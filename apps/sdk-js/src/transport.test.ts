@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { Transport } from '../src/transport'
 import type { TrackPayload } from '../src/types'
 import {
@@ -9,6 +9,12 @@ import {
   _resetForTests,
   _getTransport,
 } from '../src/init'
+
+const attachVitalListeners = vi.fn()
+
+vi.mock('./listeners/vitals', () => ({
+  attachVitalListeners,
+}))
 
 function parseBatch(body: string): TrackPayload[] {
   const parsed = JSON.parse(body) as { events: TrackPayload[] }
@@ -85,6 +91,7 @@ describe('SeeYou init + capture', () => {
 
   beforeEach(() => {
     sent.length = 0
+    attachVitalListeners.mockClear()
     const t = new Transport((_endpoint, body) => {
       sent.push(...parseBatch(body))
       return true
@@ -143,5 +150,18 @@ describe('SeeYou init + capture', () => {
     _getTransport()?.flush()
 
     expect(sent[0]!.payload.user_id).toBe('user_42')
+  })
+
+  it('does not attach web vitals listeners by default', async () => {
+    init({ endpoint: 'http://localhost:8080/track' })
+    await Promise.resolve()
+    expect(attachVitalListeners).not.toHaveBeenCalled()
+  })
+
+  it('attaches web vitals listeners when trackWebVitals is true', async () => {
+    init({ endpoint: 'http://localhost:8080/track', trackWebVitals: true })
+    await vi.waitFor(() => {
+      expect(attachVitalListeners).toHaveBeenCalledTimes(1)
+    })
   })
 })

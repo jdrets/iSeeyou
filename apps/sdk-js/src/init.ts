@@ -8,7 +8,6 @@ import type {
   WebVitalPayload,
 } from './types'
 import { attachErrorListeners } from './listeners/errors'
-import { attachVitalListeners } from './listeners/vitals'
 
 let config: SeeYouConfig | null = null
 let userId: string | undefined
@@ -98,6 +97,15 @@ function onPageHide(): void {
   transport?.flush()
 }
 
+function maybeAttachVitalListeners(): void {
+  if (!config?.trackWebVitals || typeof window === 'undefined') return
+
+  // ponytail: lazy-load web-vitals only when enabled — keeps default bundle smaller.
+  void import('./listeners/vitals').then(({ attachVitalListeners }) => {
+    attachVitalListeners(trackVital)
+  })
+}
+
 /** Initialize the SDK once. Subsequent calls update config only. */
 export function init(options: SeeYouConfig): void {
   if (!options?.endpoint) {
@@ -108,6 +116,7 @@ export function init(options: SeeYouConfig): void {
     endpoint: options.endpoint,
     sampleRate: options.sampleRate ?? 1,
     userId: options.userId,
+    trackWebVitals: options.trackWebVitals ?? false,
   }
   userId = options.userId
 
@@ -118,7 +127,7 @@ export function init(options: SeeYouConfig): void {
   initialized = true
 
   attachErrorListeners(trackError)
-  attachVitalListeners(trackVital)
+  maybeAttachVitalListeners()
 
   if (typeof window !== 'undefined') {
     window.addEventListener('pagehide', onPageHide)

@@ -230,6 +230,54 @@ Eso **borra y recrea** las tablas `errors`, `web_vitals` y `events`.
 
 ---
 
+## ClickHouse — Retención de datos (TTL 30 días)
+
+Las tablas `errors`, `web_vitals` y `events` tienen **TTL nativo de ClickHouse**:
+
+```sql
+TTL date + INTERVAL 30 DAY
+```
+
+ClickHouse elimina filas con más de 30 días **solo en background** (durante merges). No necesitás cron ni job en Laravel.
+
+### Instalación nueva
+
+El schema en `infra/clickhouse/init/001_create_tables.sql` ya incluye TTL de 30 días.
+
+### Instalación existente (cambiar de 90 → 30 días)
+
+```bash
+docker exec -i seeyou_clickhouse clickhouse-client \
+  --user seeyou \
+  --password seeyou_secret \
+  --multiquery \
+  < infra/clickhouse/init/003_ttl_30_days.sql
+```
+
+`MATERIALIZE TTL` fuerza la limpieza de datos viejos sin esperar al próximo merge.
+
+### Verificar TTL activo
+
+```bash
+docker exec seeyou_clickhouse clickhouse-client \
+  --user seeyou --password seeyou_secret --database seeyou \
+  --query "SHOW CREATE TABLE errors"
+```
+
+Deberías ver `TTL date + INTERVAL 30 DAY`.
+
+### Cambiar el período más adelante
+
+Reemplazá `30` por los días que quieras en las tres tablas:
+
+```sql
+ALTER TABLE errors MODIFY TTL date + INTERVAL 60 DAY;
+ALTER TABLE web_vitals MODIFY TTL date + INTERVAL 60 DAY;
+ALTER TABLE events MODIFY TTL date + INTERVAL 60 DAY;
+```
+
+---
+
 ## DataGrip / DBeaver — Conexión a ClickHouse
 
 | Campo    | Valor           |

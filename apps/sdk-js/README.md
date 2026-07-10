@@ -25,7 +25,8 @@ import { SeeYou } from '@seeyou/sdk'
 
 SeeYou.init({
   endpoint: 'http://localhost:8080/track',
-  // sampleRate: 0.1, // opcional, default 1
+  // trackWebVitals: true, // opcional, default false
+  // sampleRate: 0.1,
   // userId: 'user_123',
 })
 
@@ -51,7 +52,7 @@ Artefacto local tras `pnpm build`: `dist/seeyou.iife.js`.
 
 | Método | Descripción |
 |--------|-------------|
-| `SeeYou.init({ endpoint, sampleRate?, userId? })` | Arranca listeners y transporte |
+| `SeeYou.init({ endpoint, sampleRate?, userId?, trackWebVitals? })` | Arranca listeners y transporte |
 | `SeeYou.captureException(error, extra?)` | Error manual |
 | `SeeYou.captureEvent(name, properties?)` | Evento custom |
 | `SeeYou.setUser(userId \| null)` | Asocia `user_id` a eventos siguientes |
@@ -59,7 +60,7 @@ Artefacto local tras `pnpm build`: `dist/seeyou.iife.js`.
 Automático tras `init`:
 
 - `window` `error` + `unhandledrejection`
-- Web Vitals: LCP, INP, CLS, TTFB, FCP
+- Web Vitals (LCP, INP, CLS, TTFB, FCP) solo si `trackWebVitals: true`
 
 ## Payload / transporte
 

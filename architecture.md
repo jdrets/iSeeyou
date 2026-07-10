@@ -32,7 +32,7 @@ SeeYou is an open-source, self-hosted frontend observability platform. It allows
 │                                                         │
 │  Tables: errors · web_vitals · events                   │
 │  Engine: MergeTree, partitioned by month                │
-│  TTL: 90 days                                           │
+│  TTL: 30 days                                           │
 └───────────────────────┬──────────────────────────────────┘
                         │  SELECT (analytics queries)
                         ▼

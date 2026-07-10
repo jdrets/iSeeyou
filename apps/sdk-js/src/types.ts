@@ -9,6 +9,8 @@ export interface SeeYouConfig {
   /** 0–1; events below the roll are dropped. Default 1. */
   sampleRate?: number
   userId?: string
+  /** Subscribe to LCP, INP, CLS, TTFB, FCP. Default false. */
+  trackWebVitals?: boolean
 }
 
 export interface TrackPayload {

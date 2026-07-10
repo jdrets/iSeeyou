@@ -1,0 +1,43 @@
+{
+  "name": "@seeyou/sdk",
+  "version": "0.1.0",
+  "description": "Lightweight browser SDK for SeeYou frontend observability",
+  "type": "module",
+  "main": "./dist/seeyou.js",
+  "module": "./dist/seeyou.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/seeyou.js",
+      "default": "./dist/seeyou.js"
+    }
+  },
+  "unpkg": "./dist/seeyou.iife.js",
+  "jsdelivr": "./dist/seeyou.iife.js",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build && tsc --emitDeclarationOnly && node scripts/check-size.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "jsdom": "^25.0.1",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.3",
+    "vitest": "^2.1.8",
+    "web-vitals": "^4.2.4"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

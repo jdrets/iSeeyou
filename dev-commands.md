@@ -90,9 +90,11 @@ curl -X POST http://localhost:8080/track \
   }"
 ```
 
-Respuesta esperada: `{"status":"accepted"}`
+Respuesta esperada: `{"status":"accepted","count":1}`
 
 ### Payload mínimo (contrato actual)
+
+Single (sigue soportado):
 
 ```json
 {
@@ -102,8 +104,28 @@ Respuesta esperada: `{"status":"accepted"}`
 }
 ```
 
+Batch (lo que manda el SDK al flush):
+
+```json
+{
+  "events": [
+    { "type": "error", "timestamp": 1720000000000, "payload": {} },
+    { "type": "event", "timestamp": 1720000000001, "payload": {} }
+  ]
+}
+```
+
+Máximo 100 eventos por request / 64 KB de body.
+
 `timestamp` es Unix en **milisegundos**. Si omitís el campo o mandás `0`, la API usa la hora actual.
 No uses `1720000000000` en pruebas: es **3 de julio de 2024** y no aparece arriba al ordenar por fecha reciente.
+
+```bash
+# Batch de ejemplo
+curl -X POST http://localhost:8080/track \
+  -H "Content-Type: application/json" \
+  -d "{\"events\":[{\"type\":\"event\",\"timestamp\":$(date +%s000),\"payload\":{\"event_type\":\"custom\",\"event_name\":\"batch_demo\",\"url\":\"https://example.com/\"}}]}"
+```
 
 ---
 

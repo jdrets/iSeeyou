@@ -19,6 +19,7 @@ func main() {
 	// Desde Go 1.22 el mux soporta "METHOD /path" directamente.
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /health", healthHandler)
+	mux.HandleFunc("OPTIONS /track", trackOptionsHandler)
 	mux.HandleFunc("POST /track", trackHandler(db))
 
 	// 3. Arrancar el servidor HTTP.

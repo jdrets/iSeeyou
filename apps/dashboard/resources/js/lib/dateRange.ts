@@ -77,3 +77,34 @@ export function resolveApiDateRange(
 
     return toApiDateBounds(local.from, local.to);
 }
+
+export function buildLogsHref(options: {
+    type?: 'error' | 'log';
+    range: DateRangePreset;
+    customFrom?: string;
+    customTo?: string;
+}): string {
+    const params = new URLSearchParams();
+
+    if (options.type) {
+        params.set('type', options.type);
+    }
+
+    if (options.range !== DEFAULT_DATE_RANGE_PRESET) {
+        params.set('range', options.range);
+    }
+
+    if (options.range === 'custom') {
+        const { from, to } = resolveDateRange(
+            'custom',
+            options.customFrom,
+            options.customTo,
+        );
+        params.set('from', from);
+        params.set('to', to);
+    }
+
+    const query = params.toString();
+
+    return query ? `/logs?${query}` : '/logs';
+}

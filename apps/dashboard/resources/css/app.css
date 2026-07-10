@@ -6,45 +6,51 @@
 
 @layer base {
     :root {
-        /* SeeYou dark theme — CSS variables (HSL without hsl()) */
-        --background: 222 47% 8%;       /* #0F172A */
-        --foreground: 210 40% 98%;      /* #F8FAFC */
+        /* SeeYou liquid glass — dark observability (HSL channels) */
+        --background: 230 35% 6%;
+        --foreground: 210 40% 98%;
 
-        --card: 217 33% 14%;            /* #1E293B */
+        --card: 220 30% 12%;
         --card-foreground: 210 40% 98%;
 
-        --popover: 217 33% 14%;
+        --popover: 220 30% 11%;
         --popover-foreground: 210 40% 98%;
 
-        --primary: 143 71% 45%;         /* #22C55E CTA green */
-        --primary-foreground: 222 47% 8%;
+        --primary: 143 71% 45%;
+        --primary-foreground: 230 35% 6%;
 
-        --secondary: 215 25% 27%;       /* #334155 */
+        --secondary: 220 25% 18%;
         --secondary-foreground: 210 40% 98%;
 
-        --muted: 217 33% 17%;
-        --muted-foreground: 215 20% 65%;
+        --muted: 220 25% 14%;
+        --muted-foreground: 215 16% 68%;
 
-        --accent: 215 25% 27%;
+        --accent: 220 25% 18%;
         --accent-foreground: 210 40% 98%;
 
         --destructive: 0 84% 60%;
         --destructive-foreground: 210 40% 98%;
 
-        --border: 217 33% 20%;
-        --input: 217 33% 18%;
+        --border: 220 20% 18%;
+        --input: 220 25% 16%;
         --ring: 143 71% 45%;
 
         --radius: 0.5rem;
 
-        --sidebar: 220 47% 7%;          /* slightly darker than bg */
+        --sidebar: 220 30% 8%;
         --sidebar-foreground: 210 40% 98%;
-        --sidebar-border: 217 33% 18%;
+        --sidebar-border: 220 20% 18%;
 
-        --cta: 143 71% 45%;             /* #22C55E */
+        --cta: 143 71% 45%;
+
+        /* Liquid glass tokens — no borders */
+        --glass-blur: 20px;
+        --glass-saturate: 160%;
+        --glass-bg: 0 0% 100%;
+        --glass-bg-opacity: 0.1;
+        --glass-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
     }
 
-    /* Force dark mode — observability panel is always dark */
     html {
         color-scheme: dark;
     }
@@ -57,15 +63,88 @@
         @apply bg-background text-foreground font-sans antialiased;
     }
 
-    /* Smooth scrollbar */
     ::-webkit-scrollbar {
         width: 6px;
         height: 6px;
     }
     ::-webkit-scrollbar-track {
-        @apply bg-background;
+        background: transparent;
     }
     ::-webkit-scrollbar-thumb {
-        @apply bg-secondary rounded-full;
+        @apply rounded-full bg-white/10;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        @apply bg-white/20;
+    }
+}
+
+@layer components {
+    /* Ambient orbs — peripheral only, faded toward content */
+    .ambient-bg {
+        @apply pointer-events-none absolute inset-0 overflow-hidden;
+        mask-image: radial-gradient(
+            ellipse 75% 65% at 58% 42%,
+            transparent 42%,
+            black 88%
+        );
+        -webkit-mask-image: radial-gradient(
+            ellipse 75% 65% at 58% 42%,
+            transparent 42%,
+            black 88%
+        );
+    }
+
+    .ambient-bg::before,
+    .ambient-bg::after {
+        content: '';
+        @apply absolute rounded-full;
+        filter: blur(80px);
+    }
+
+    .ambient-bg::before {
+        @apply -left-16 -top-20 h-52 w-52 bg-cta/10;
+    }
+
+    .ambient-bg::after {
+        @apply -right-24 top-0 h-48 w-48 bg-sky-500/10;
+    }
+
+    .ambient-orb {
+        @apply absolute -bottom-16 -right-8 h-56 w-56 rounded-full bg-violet-500/5;
+        filter: blur(90px);
+    }
+
+    /* Frosted glass — no borders */
+    .glass {
+        background: hsl(var(--glass-bg) / var(--glass-bg-opacity));
+        box-shadow: var(--glass-shadow);
+        backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+        -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    }
+
+    .glass-strong {
+        background: hsl(var(--glass-bg) / 0.12);
+        box-shadow: var(--glass-shadow);
+        backdrop-filter: blur(28px) saturate(180%);
+        -webkit-backdrop-filter: blur(28px) saturate(180%);
+    }
+
+    .glass-nav-active {
+        background: hsl(var(--cta) / 0.18);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .glass,
+    .glass-strong {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: hsl(var(--card));
+    }
+
+    .ambient-bg::before,
+    .ambient-bg::after,
+    .ambient-orb {
+        display: none;
     }
 }

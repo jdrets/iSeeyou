@@ -129,6 +129,8 @@ export function useDateRangeFilters() {
         range: applied.range,
         customFrom: draftCustomFrom,
         customTo: draftCustomTo,
+        appliedCustomFrom: applied.customFrom,
+        appliedCustomTo: applied.customTo,
         from: apiRange.from,
         to: apiRange.to,
         setDatePreset,

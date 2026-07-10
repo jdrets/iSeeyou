@@ -87,7 +87,7 @@ function LogRow({
             <TableCell className="whitespace-nowrap font-mono text-xs text-muted-foreground">
                 {ts}
             </TableCell>
-            <TableCell>
+            <TableCell className="align-middle">
                 <Badge variant={isError ? 'error' : 'success'}>
                     {entry.type}
                 </Badge>
@@ -168,7 +168,7 @@ export default function LogsIndex() {
                 </Button>
             </div>
 
-            <div className="mb-4 flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card p-3">
+            <div className="glass mb-4 flex flex-wrap items-center gap-2 rounded-lg p-3">
                 <Search className="h-3.5 w-3.5 text-muted-foreground" />
 
                 <Select
@@ -213,7 +213,7 @@ export default function LogsIndex() {
                 </div>
             )}
 
-            <div className="rounded-lg border border-border bg-card">
+            <div className="glass overflow-hidden rounded-lg">
                 <Table>
                     <TableHeader>
                         <TableRow>

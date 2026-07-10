@@ -1,5 +1,5 @@
-import { Head } from '@inertiajs/react';
-import { AlertTriangle, FileText, BarChart3, RefreshCw } from 'lucide-react';
+import { Head, Link } from '@inertiajs/react';
+import { AlertTriangle, FileText, BarChart3, RefreshCw, ArrowRight } from 'lucide-react';
 import AppLayout from '@/Layouts/AppLayout';
 import DateRangeFilter from '@/Components/filters/DateRangeFilter';
 import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
@@ -7,6 +7,7 @@ import { Button } from '@/Components/ui/button';
 import { Skeleton } from '@/Components/ui/skeleton';
 import { useDateRangeFilters } from '@/hooks/useDateRangeFilters';
 import { useStats } from '@/hooks/useStats';
+import { buildLogsHref } from '@/lib/dateRange';
 import { cn } from '@/lib/utils';
 
 type MetricCardProps = {
@@ -15,9 +16,17 @@ type MetricCardProps = {
     icon: React.ComponentType<{ className?: string }>;
     loading: boolean;
     accent?: string;
+    logsHref?: string;
 };
 
-function MetricCard({ title, value, icon: Icon, loading, accent }: MetricCardProps) {
+function MetricCard({
+    title,
+    value,
+    icon: Icon,
+    loading,
+    accent,
+    logsHref,
+}: MetricCardProps) {
     return (
         <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -32,6 +41,19 @@ function MetricCard({ title, value, icon: Icon, loading, accent }: MetricCardPro
                         {(value ?? 0).toLocaleString()}
                     </p>
                 )}
+                {logsHref ? (
+                    <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        className="mt-3 w-full"
+                    >
+                        <Link href={logsHref} className="cursor-pointer">
+                            View logs
+                            <ArrowRight className="h-3.5 w-3.5" />
+                        </Link>
+                    </Button>
+                ) : null}
             </CardContent>
         </Card>
     );
@@ -42,6 +64,8 @@ export default function DashboardIndex() {
         range,
         customFrom,
         customTo,
+        appliedCustomFrom,
+        appliedCustomTo,
         from,
         to,
         setDatePreset,
@@ -51,6 +75,12 @@ export default function DashboardIndex() {
         isCustomRange,
         hasPendingCustomRange,
     } = useDateRangeFilters();
+
+    const logsHrefBase = {
+        range,
+        customFrom: appliedCustomFrom,
+        customTo: appliedCustomTo,
+    };
 
     const { data, isPending, isError, refetch, isFetching } = useStats({
         from,
@@ -121,6 +151,7 @@ export default function DashboardIndex() {
                     icon={AlertTriangle}
                     loading={isPending}
                     accent="text-red-400"
+                    logsHref={buildLogsHref({ ...logsHrefBase, type: 'error' })}
                 />
                 <MetricCard
                     title="Logs"
@@ -128,6 +159,7 @@ export default function DashboardIndex() {
                     icon={FileText}
                     loading={isPending}
                     accent="text-blue-400"
+                    logsHref={buildLogsHref({ ...logsHrefBase, type: 'log' })}
                 />
                 <MetricCard
                     title="Total Events"

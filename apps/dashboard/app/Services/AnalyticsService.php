@@ -240,8 +240,13 @@ SQL
      */
     private function resolveDateRange(?string $from, ?string $to): array
     {
-        $toDate = $to ? Carbon::parse($to)->endOfDay() : Carbon::now()->endOfDay();
-        $fromDate = $from ? Carbon::parse($from)->startOfDay() : $toDate->copy()->subDays(7)->startOfDay();
+        $toDate = $to
+            ? Carbon::parse($to)->utc()
+            : Carbon::now('UTC');
+
+        $fromDate = $from
+            ? Carbon::parse($from)->utc()
+            : $toDate->copy()->subDays(7)->startOfDay();
 
         if ($fromDate->greaterThan($toDate)) {
             throw new InvalidArgumentException('from must be before or equal to to.');
@@ -255,7 +260,7 @@ SQL
         $fromSql = $from->format('Y-m-d H:i:s.v');
         $toSql = $to->format('Y-m-d H:i:s.v');
 
-        return "timestamp >= toDateTime64('{$fromSql}', 3) AND timestamp <= toDateTime64('{$toSql}', 3)";
+        return "timestamp >= toDateTime64('{$fromSql}', 3, 'UTC') AND timestamp <= toDateTime64('{$toSql}', 3, 'UTC')";
     }
 
     private function unionSql(?string $type, Carbon $from, Carbon $to): string

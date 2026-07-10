@@ -1,12 +1,11 @@
-import { useState } from 'react';
 import { Head } from '@inertiajs/react';
 import { AlertTriangle, FileText, BarChart3, RefreshCw } from 'lucide-react';
-import { format, subDays } from 'date-fns';
 import AppLayout from '@/Layouts/AppLayout';
+import DateRangeFilter from '@/Components/filters/DateRangeFilter';
 import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
-import { Input } from '@/Components/ui/input';
 import { Button } from '@/Components/ui/button';
 import { Skeleton } from '@/Components/ui/skeleton';
+import { useDateRangeFilters } from '@/hooks/useDateRangeFilters';
 import { useStats } from '@/hooks/useStats';
 import { cn } from '@/lib/utils';
 
@@ -39,29 +38,29 @@ function MetricCard({ title, value, icon: Icon, loading, accent }: MetricCardPro
 }
 
 export default function DashboardIndex() {
-    const today = format(new Date(), 'yyyy-MM-dd');
-    const sevenDaysAgo = format(subDays(new Date(), 7), 'yyyy-MM-dd');
-
-    const [from, setFrom] = useState(sevenDaysAgo);
-    const [to, setTo] = useState(today);
-    const [appliedFrom, setAppliedFrom] = useState(sevenDaysAgo);
-    const [appliedTo, setAppliedTo] = useState(today);
+    const {
+        range,
+        customFrom,
+        customTo,
+        from,
+        to,
+        setDatePreset,
+        setCustomFrom,
+        setCustomTo,
+        applyCustomRange,
+        isCustomRange,
+        hasPendingCustomRange,
+    } = useDateRangeFilters();
 
     const { data, isPending, isError, refetch, isFetching } = useStats({
-        from: appliedFrom,
-        to: appliedTo,
+        from,
+        to,
     });
-
-    const handleApply = () => {
-        setAppliedFrom(from);
-        setAppliedTo(to);
-    };
 
     return (
         <AppLayout>
             <Head title="Dashboard" />
 
-            {/* Header */}
             <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h1 className="text-xl font-semibold text-foreground">
@@ -72,37 +71,26 @@ export default function DashboardIndex() {
                     </p>
                 </div>
 
-                {/* Date range filters */}
                 <div className="flex flex-wrap items-center gap-2">
-                    <div className="flex items-center gap-2">
-                        <label className="text-xs text-muted-foreground">
-                            From
-                        </label>
-                        <Input
-                            type="date"
-                            value={from}
-                            onChange={(e) => setFrom(e.target.value)}
-                            className="w-36"
-                        />
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <label className="text-xs text-muted-foreground">
-                            To
-                        </label>
-                        <Input
-                            type="date"
-                            value={to}
-                            onChange={(e) => setTo(e.target.value)}
-                            className="w-36"
-                        />
-                    </div>
-                    <Button
-                        size="sm"
-                        onClick={handleApply}
-                        disabled={isFetching}
-                    >
-                        Apply
-                    </Button>
+                    <DateRangeFilter
+                        preset={range}
+                        customFrom={customFrom}
+                        customTo={customTo}
+                        onPresetChange={setDatePreset}
+                        onCustomFromChange={setCustomFrom}
+                        onCustomToChange={setCustomTo}
+                    />
+
+                    {isCustomRange ? (
+                        <Button
+                            size="sm"
+                            onClick={applyCustomRange}
+                            disabled={isFetching || !hasPendingCustomRange}
+                        >
+                            Apply
+                        </Button>
+                    ) : null}
+
                     <Button
                         size="icon"
                         variant="outline"
@@ -120,14 +108,12 @@ export default function DashboardIndex() {
                 </div>
             </div>
 
-            {/* Error state */}
             {isError && (
                 <div className="mb-4 rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-red-400">
                     Failed to load stats. Please try again.
                 </div>
             )}
 
-            {/* Metric cards */}
             <div className="grid gap-4 sm:grid-cols-3">
                 <MetricCard
                     title="Errors"

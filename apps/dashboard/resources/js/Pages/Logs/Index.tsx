@@ -6,8 +6,9 @@ import {
     RefreshCw,
     Search,
 } from 'lucide-react';
-import { format, subDays } from 'date-fns';
+import { formatUtcTimestamp } from '@/lib/formatTimestamp';
 import AppLayout from '@/Layouts/AppLayout';
+import DateRangeFilter from '@/Components/filters/DateRangeFilter';
 import LogDetailDrawer from '@/Components/logs/LogDetailDrawer';
 import {
     Table,
@@ -19,7 +20,6 @@ import {
 } from '@/Components/ui/table';
 import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
-import { Input } from '@/Components/ui/input';
 import { Skeleton } from '@/Components/ui/skeleton';
 import {
     Select,
@@ -29,6 +29,7 @@ import {
     SelectValue,
 } from '@/Components/ui/select';
 import { useLogs } from '@/hooks/useLogs';
+import { useLogsFilters } from '@/hooks/useLogsFilters';
 import { type LogEntry } from '@/lib/api';
 import { cn } from '@/lib/utils';
 
@@ -64,9 +65,7 @@ function LogRow({
     onSelect: (entry: LogEntry) => void;
 }) {
     const isError = entry.type === 'error';
-    const ts = entry.timestamp
-        ? format(new Date(entry.timestamp), 'yyyy-MM-dd HH:mm:ss')
-        : '—';
+    const ts = formatUtcTimestamp(entry.timestamp);
 
     return (
         <TableRow
@@ -101,44 +100,41 @@ function LogRow({
 }
 
 export default function LogsIndex() {
-    const today = format(new Date(), 'yyyy-MM-dd');
-    const sevenDaysAgo = format(subDays(new Date(), 7), 'yyyy-MM-dd');
+    const {
+        type,
+        range,
+        customFrom,
+        customTo,
+        from,
+        to,
+        page,
+        perPage,
+        setTypeFilter,
+        setDatePreset,
+        setCustomFrom,
+        setCustomTo,
+        applyCustomRange,
+        setPageFilter,
+        setPerPageFilter,
+        isCustomRange,
+        hasPendingCustomRange,
+    } = useLogsFilters();
 
-    const [type, setType] = useState<'all' | 'error' | 'log'>('all');
-    const [from, setFrom] = useState(sevenDaysAgo);
-    const [to, setTo] = useState(today);
-    const [page, setPage] = useState(1);
-    const [perPage, setPerPage] = useState(20);
     const [selected, setSelected] = useState<{
         id: string;
         type: 'error' | 'log';
     } | null>(null);
 
-    const [appliedFilters, setAppliedFilters] = useState({
-        type: 'all' as 'all' | 'error' | 'log',
-        from: sevenDaysAgo,
-        to: today,
-    });
-
     const { data, isPending, isError, isFetching, refetch } = useLogs({
-        type: appliedFilters.type,
-        from: appliedFilters.from,
-        to: appliedFilters.to,
+        type,
+        from,
+        to,
         page,
         per_page: perPage,
     });
 
     const meta = data?.meta;
     const logs = data?.data ?? [];
-
-    const handleApply = () => {
-        setPage(1);
-        setAppliedFilters({ type, from, to });
-    };
-
-    const handlePageChange = (newPage: number) => {
-        setPage(newPage);
-    };
 
     return (
         <AppLayout>
@@ -177,8 +173,8 @@ export default function LogsIndex() {
 
                 <Select
                     value={type}
-                    onValueChange={(v) =>
-                        setType(v as 'all' | 'error' | 'log')
+                    onValueChange={(value) =>
+                        setTypeFilter(value as 'all' | 'error' | 'log')
                     }
                 >
                     <SelectTrigger className="w-28">
@@ -191,31 +187,24 @@ export default function LogsIndex() {
                     </SelectContent>
                 </Select>
 
-                <div className="flex items-center gap-1.5">
-                    <label className="text-xs text-muted-foreground">
-                        From
-                    </label>
-                    <Input
-                        type="date"
-                        value={from}
-                        onChange={(e) => setFrom(e.target.value)}
-                        className="w-36"
-                    />
-                </div>
+                <DateRangeFilter
+                    preset={range}
+                    customFrom={customFrom}
+                    customTo={customTo}
+                    onPresetChange={setDatePreset}
+                    onCustomFromChange={setCustomFrom}
+                    onCustomToChange={setCustomTo}
+                />
 
-                <div className="flex items-center gap-1.5">
-                    <label className="text-xs text-muted-foreground">To</label>
-                    <Input
-                        type="date"
-                        value={to}
-                        onChange={(e) => setTo(e.target.value)}
-                        className="w-36"
-                    />
-                </div>
-
-                <Button size="sm" onClick={handleApply} disabled={isFetching}>
-                    Apply
-                </Button>
+                {isCustomRange ? (
+                    <Button
+                        size="sm"
+                        onClick={applyCustomRange}
+                        disabled={isFetching || !hasPendingCustomRange}
+                    >
+                        Apply
+                    </Button>
+                ) : null}
             </div>
 
             {isError && (
@@ -273,10 +262,9 @@ export default function LogsIndex() {
                         <span>Rows per page:</span>
                         <Select
                             value={String(perPage)}
-                            onValueChange={(v) => {
-                                setPerPage(Number(v));
-                                setPage(1);
-                            }}
+                            onValueChange={(value) =>
+                                setPerPageFilter(Number(value))
+                            }
                         >
                             <SelectTrigger className="w-16">
                                 <SelectValue />
@@ -299,9 +287,7 @@ export default function LogsIndex() {
                             <Button
                                 size="icon"
                                 variant="outline"
-                                onClick={() =>
-                                    handlePageChange(meta.page - 1)
-                                }
+                                onClick={() => setPageFilter(meta.page - 1)}
                                 disabled={meta.page <= 1 || isFetching}
                             >
                                 <ChevronLeft className="h-4 w-4" />
@@ -309,9 +295,7 @@ export default function LogsIndex() {
                             <Button
                                 size="icon"
                                 variant="outline"
-                                onClick={() =>
-                                    handlePageChange(meta.page + 1)
-                                }
+                                onClick={() => setPageFilter(meta.page + 1)}
                                 disabled={
                                     meta.page >= meta.last_page || isFetching
                                 }

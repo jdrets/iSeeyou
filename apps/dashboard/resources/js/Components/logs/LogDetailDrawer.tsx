@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { formatUtcTimestamp } from '@/lib/formatTimestamp';
 import { Copy, Check } from 'lucide-react';
 import { useState } from 'react';
 import {
@@ -217,14 +217,10 @@ export default function LogDetailDrawer({
                             <Field label="Message" value={data.message} />
                             <Field
                                 label="Timestamp"
-                                value={
-                                    data.timestamp
-                                        ? format(
-                                              new Date(data.timestamp),
-                                              'yyyy-MM-dd HH:mm:ss.SSS',
-                                          )
-                                        : null
-                                }
+                                value={formatUtcTimestamp(
+                                    data.timestamp,
+                                    'yyyy-MM-dd HH:mm:ss.SSS',
+                                )}
                                 mono
                             />
 

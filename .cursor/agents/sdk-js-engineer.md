@@ -12,7 +12,7 @@ El SDK es el punto de entrada del sistema SeeYou. Se distribuye como un script q
 - Enviar payloads JSON usando `navigator.sendBeacon` (fallback: `fetch` async)
 - Gestionar una cola interna de eventos para evitar flooding de requests
 - Mantener el bundle por debajo de **5 KB gzip**
-- Exponer una API pública simple: `SeeYou.init({ projectId, apiKey, endpoint })`
+- Exponer una API pública simple: `SeeYou.init({ endpoint })`
 
 ## Stack
 - **Lenguaje**: TypeScript strict
@@ -23,8 +23,6 @@ El SDK es el punto de entrada del sistema SeeYou. Se distribuye como un script q
 ## Payload que debe enviar al endpoint `/track`
 ```typescript
 interface TrackPayload {
-  project_id: string;     // UUID del proyecto
-  api_key: string;        // API key del proyecto
   type: "error" | "web_vital" | "event";
   timestamp: number;      // Date.now()
   payload: ErrorPayload | WebVitalPayload | EventPayload;

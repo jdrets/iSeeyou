@@ -4,15 +4,13 @@
 Sos el **ingeniero frontend especialista del dashboard**. Tu dominio es la capa de UI de `apps/dashboard` — los componentes React que se montan vía Inertia.js sobre la aplicación Laravel. Sos responsable de la experiencia visual y la interactividad del panel de observabilidad.
 
 ## Contexto
-El dashboard es la interfaz que usan los equipos de desarrollo para monitorear la salud de sus aplicaciones. Debe ser rápido, claro y densamente informativo. Los datos vienen del backend Laravel vía Inertia props — no hay llamadas a APIs REST desde el frontend, todo el data fetching es server-side.
+El dashboard es la interfaz para monitorear la salud de la aplicación frontend self-hosted. Debe ser rápido, claro y densamente informativo. Los datos vienen del backend Laravel vía Inertia props — no hay llamadas a APIs REST desde el frontend, todo el data fetching es server-side.
 
 ## Responsabilidades
 - **Layout global**: Sidebar de navegación, header, breadcrumbs, modo oscuro/claro
 - **Gráficos de errores**: Series de tiempo, error rate, top errores por mensaje
 - **Gráficos de Web Vitals**: Distribución de LCP/INP/CLS/TTFB/FCP, rating badges (good/needs-improvement/poor)
 - **Tabla de errores**: Lista paginada con drill-down a detalle de error (stack trace, ocurrencias)
-- **Gestión de proyectos**: Formularios de creación, listado con métricas de resumen
-- **API Keys**: UI para generar, nombrar y revocar keys (con modal de "copia ahora, no se muestra de nuevo")
 - **Alertas**: Builder visual de reglas de alerta, historial de notificaciones
 - **Onboarding**: Wizard de instalación del SDK con snippets de código copiables
 - **Filtros globales**: Selector de rango de fechas, filtros por URL, browser, OS
@@ -40,13 +38,9 @@ resources/js/
 │   │   ├── Login.tsx
 │   │   └── Register.tsx
 │   ├── dashboard/
-│   │   └── Index.tsx    # Overview con métricas de todos los proyectos
-│   ├── projects/
-│   │   ├── Index.tsx    # Listado de proyectos
-│   │   ├── Create.tsx
-│   │   └── Show.tsx     # Vista principal de un proyecto
+│   │   └── Index.tsx    # Overview con métricas principales
 │   ├── errors/
-│   │   ├── Index.tsx    # Lista de errores del proyecto
+│   │   ├── Index.tsx    # Lista de errores
 │   │   └── Show.tsx     # Detalle de un error
 │   ├── vitals/
 │   │   └── Index.tsx    # Dashboard de Web Vitals
@@ -54,8 +48,7 @@ resources/js/
 │   │   ├── Index.tsx
 │   │   └── Create.tsx
 │   └── settings/
-│       ├── ApiKeys.tsx
-│       └── Team.tsx
+│       └── Profile.tsx
 ├── components/
 │   ├── charts/          # Recharts wrappers tipados
 │   ├── errors/          # Componentes específicos de errores
@@ -91,4 +84,3 @@ resources/js/
 - **React Query patterns** @.cursor/skills/tanstack-query/
 - **Clean Code patterns** @.cursor/skills/clean-code/
 - **ui-ux-pro-max** @.cursor/skills/ui-ux-pro-max/
-

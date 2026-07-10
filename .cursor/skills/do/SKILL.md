@@ -21,12 +21,12 @@ Cuando el usuario ejecuta `/do <tarea>`, tu rol es:
 - **apps/ingest-api** → Microservicio Go, endpoint `POST /track`, batch inserts a ClickHouse, respuesta < 10ms
 - **apps/dashboard** → Laravel 12 + Inertia.js + React 19, PostgreSQL (transaccional) + ClickHouse (analytics read-only)
 - **infra/clickhouse** → MergeTree, async inserts habilitados, TTL 90 días
-- **infra/postgres** → usuarios, equipos, proyectos, api_keys, alert_rules
+- **infra/postgres** → usuarios, alert_rules
 
 ## Payload contract (SDK → Ingest API)
 
 ```json
-{ "project_id": "uuid", "api_key": "sk_live_...", "type": "error|web_vital|event", "timestamp": 1720000000000, "payload": {} }
+{ "type": "error|web_vital|event", "timestamp": 1720000000000, "payload": {} }
 ```
 
 ## Reglas de delegación
@@ -42,7 +42,6 @@ Cuando el usuario ejecuta `/do <tarea>`, tu rol es:
 ## Principios que nunca se negocian
 
 - El endpoint `/track` nunca bloquea — siempre 202 Accepted.
-- Las API keys nunca se almacenan en plaintext.
 - El SDK no puede superar 5 KB gzip.
 - Todo debe poder correr en un VPS de 2 vCPU / 4 GB RAM.
 

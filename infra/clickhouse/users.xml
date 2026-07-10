@@ -15,11 +15,15 @@
 
     <profiles>
         <default>
-            <!-- Async inserts habilitados por defecto para el usuario seeyou -->
+            <!-- Async inserts: el servidor acumula filas y escribe en batch -->
             <async_insert>1</async_insert>
             <wait_for_async_insert>0</wait_for_async_insert>
-            <async_insert_max_data_size>10485760</async_insert_max_data_size>
+            <async_insert_max_data_size>10485760</async_insert_max_data_size>  <!-- 10 MB -->
             <async_insert_busy_timeout_ms>200</async_insert_busy_timeout_ms>
+
+            <!-- Memoria máxima por query (512 MB para dev, subir en prod) -->
+            <!-- Este setting es user-level, por eso va aquí y no en config.xml -->
+            <max_memory_usage>536870912</max_memory_usage>
         </default>
     </profiles>
 </clickhouse>

@@ -20,7 +20,6 @@ SeeYou is an open-source, self-hosted frontend observability platform. It allows
 ┌──────────────────────────────────────────────────────────┐
 │             apps/ingest-api  (Go)                        │
 │                                                         │
-│  • Validate API Key (in-memory cache)                   │
 │  • Validate payload schema                              │
 │  • Buffer events in memory                              │
 │  • Batch insert → ClickHouse (async)                    │
@@ -40,12 +39,11 @@ SeeYou is an open-source, self-hosted frontend observability platform. It allows
 ┌──────────────────────────────────────────────────────────┐
 │             apps/dashboard  (Laravel + Inertia + React)  │
 │                                                         │
-│  • User auth & team management                          │
-│  • Project & API Key management                         │
+│  • User auth                                            │
 │  • Alert rules & notifications                          │
 │  • Analytics charts (errors, vitals, events)            │
 │                                                         │
-│  PostgreSQL ──── users, teams, projects, api_keys       │
+│  PostgreSQL ──── users, alert_rules                     │
 │  ClickHouse ──── analytics queries (read-only)          │
 └──────────────────────────────────────────────────────────┘
 ```
@@ -112,8 +110,6 @@ pnpm dev
 
 ```json
 {
-  "project_id": "uuid",
-  "api_key": "sk_live_...",
   "type": "error | web_vital | event",
   "timestamp": 1720000000000,
   "payload": {}

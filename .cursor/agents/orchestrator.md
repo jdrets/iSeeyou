@@ -24,7 +24,7 @@ seeyou/
 
 ## Stack de Infraestructura
 - **ClickHouse**: Almacén analítico para errores, web vitals y eventos. Particionado por mes, TTL de 90 días. Async inserts habilitados.
-- **PostgreSQL**: Base de datos transaccional para usuarios, equipos, proyectos, API keys y alertas.
+- **PostgreSQL**: Base de datos transaccional para usuarios y alertas.
 - **Turborepo + pnpm**: Gestión del monorepo con build caching y scripts paralelos.
 
 ## Agentes Especialistas Disponibles
@@ -32,7 +32,7 @@ seeyou/
 |---|---|---|
 | `sdk-js-engineer` | `apps/sdk-js` | TypeScript, Browser APIs, Web Vitals, Bundle Size |
 | `ingest-api-engineer` | `apps/ingest-api` | Go, HTTP performance, ClickHouse batching |
-| `dashboard-backend-engineer` | `apps/dashboard` | Laravel, PHP, PostgreSQL, API Keys, Auth |
+| `dashboard-backend-engineer` | `apps/dashboard` | Laravel, PHP, PostgreSQL, Auth |
 | `dashboard-frontend-engineer` | `apps/dashboard` | React, Inertia.js, Tailwind, Charts, UI/UX |
 
 ## Responsabilidades del Orchestrator
@@ -45,8 +45,6 @@ seeyou/
 ## Payload Contract (SDK → Ingest API)
 ```json
 {
-  "project_id": "uuid",
-  "api_key": "sk_...",
   "type": "error | web_vital | event",
   "timestamp": 1720000000000,
   "payload": {
@@ -57,7 +55,7 @@ seeyou/
 
 ## Cuándo Delegar a Especialistas
 - **sdk-js-engineer**: cualquier cambio en `apps/sdk-js/`, tamaño del bundle, compatibilidad de browser, métodos de envío.
-- **ingest-api-engineer**: rendimiento del endpoint `/track`, validación de payloads, batching a ClickHouse, autenticación por API key.
+- **ingest-api-engineer**: rendimiento del endpoint `/track`, validación de payloads, batching a ClickHouse.
 - **dashboard-backend-engineer**: modelos Eloquent, migraciones, rutas API, lógica de negocio del dashboard, sistema de alertas.
 - **dashboard-frontend-engineer**: componentes React/Inertia, gráficos analíticos, formularios, diseño de UI.
 

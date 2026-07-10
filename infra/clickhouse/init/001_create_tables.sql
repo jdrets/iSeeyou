@@ -1,6 +1,7 @@
 -- =========================================================
 -- SeeYou — Schema inicial de ClickHouse
 -- Motor: MergeTree con particionado por fecha
+-- Self-hosted: un solo frontend, sin project_id
 -- =========================================================
 
 CREATE DATABASE IF NOT EXISTS seeyou;
@@ -10,7 +11,6 @@ CREATE DATABASE IF NOT EXISTS seeyou;
 -- ─────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS seeyou.errors
 (
-    project_id    UUID,
     event_id      UUID          DEFAULT generateUUIDv4(),
     timestamp     DateTime64(3) DEFAULT now64(),
     date          Date          MATERIALIZED toDate(timestamp),
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS seeyou.errors
 )
 ENGINE = MergeTree()
 PARTITION BY toYYYYMM(date)
-ORDER BY (project_id, date, timestamp)
+ORDER BY (date, timestamp)
 TTL date + INTERVAL 90 DAY
 SETTINGS index_granularity = 8192;
 
@@ -48,7 +48,6 @@ SETTINGS index_granularity = 8192;
 -- ─────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS seeyou.web_vitals
 (
-    project_id    UUID,
     event_id      UUID          DEFAULT generateUUIDv4(),
     timestamp     DateTime64(3) DEFAULT now64(),
     date          Date          MATERIALIZED toDate(timestamp),
@@ -72,7 +71,7 @@ CREATE TABLE IF NOT EXISTS seeyou.web_vitals
 )
 ENGINE = MergeTree()
 PARTITION BY toYYYYMM(date)
-ORDER BY (project_id, date, metric_name, timestamp)
+ORDER BY (date, metric_name, timestamp)
 TTL date + INTERVAL 90 DAY
 SETTINGS index_granularity = 8192;
 
@@ -82,7 +81,6 @@ SETTINGS index_granularity = 8192;
 -- ─────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS seeyou.events
 (
-    project_id    UUID,
     event_id      UUID          DEFAULT generateUUIDv4(),
     timestamp     DateTime64(3) DEFAULT now64(),
     date          Date          MATERIALIZED toDate(timestamp),
@@ -98,6 +96,6 @@ CREATE TABLE IF NOT EXISTS seeyou.events
 )
 ENGINE = MergeTree()
 PARTITION BY toYYYYMM(date)
-ORDER BY (project_id, date, event_type, timestamp)
+ORDER BY (date, event_type, timestamp)
 TTL date + INTERVAL 90 DAY
 SETTINGS index_granularity = 8192;

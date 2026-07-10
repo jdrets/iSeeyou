@@ -9,7 +9,6 @@ La Ingest API es el único servicio que interactúa directamente con el SDK del 
 ## Responsabilidades
 - Exponer el endpoint `POST /track` para recibir payloads del SDK
 - Exponer `GET /health` para health checks de Docker/K8s
-- Validar el API key en memoria (caché caliente desde PostgreSQL al startup)
 - Validar el schema del payload JSON de forma ultra rápida
 - Acumular eventos en un buffer en memoria por tipo
 - Realizar batch inserts a ClickHouse con async inserts habilitados
@@ -28,10 +27,8 @@ La Ingest API es el único servicio que interactúa directamente con el SDK del 
 ```
 PORT=8080
 CLICKHOUSE_DSN=clickhouse://seeyou:seeyou_secret@localhost:9000/seeyou
-POSTGRES_DSN=postgres://seeyou:seeyou_secret@localhost:5432/seeyou
 BATCH_SIZE=1000          # Insertar cuando el buffer llega a N eventos
 BATCH_FLUSH_MS=500       # Insertar cada N ms aunque el buffer no esté lleno
-API_KEY_CACHE_TTL=60     # Segundos de TTL para el caché de API keys
 MAX_PAYLOAD_BYTES=65536  # 64 KB máximo por request
 ```
 
@@ -42,7 +39,6 @@ Request → Middleware (CORS, rate limit, size limit)
             → Validate Content-Type: application/json
             → Read body (max MAX_PAYLOAD_BYTES)
             → Parse JSON rápido
-            → Validate API key (in-memory cache → PostgreSQL fallback)
             → Validate payload schema (switch por tipo)
             → Enqueue en buffer goroutine-safe (channel o sync.Mutex slice)
             → Responder 202 Accepted inmediatamente
@@ -62,9 +58,6 @@ Background Worker (goroutine)
 
 // 400 Bad Request
 { "error": "invalid_payload", "detail": "..." }
-
-// 401 Unauthorized
-{ "error": "invalid_api_key" }
 
 // 413 Payload Too Large
 { "error": "payload_too_large" }

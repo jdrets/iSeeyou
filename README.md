@@ -1,4 +1,4 @@
-# ISeeYou
+# iSeeYou
 
 Plataforma de observabilidad de frontend **open-source y self-hosted**. Instalás un SDK liviano en tu app web para capturar errores, eventos de usuario y (opcionalmente) Core Web Vitals — sin mandar datos a terceros.
 

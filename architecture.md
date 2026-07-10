@@ -101,7 +101,20 @@ seeyou/
 pnpm db:up
 ```
 
-### Start all dev servers
+PostgreSQL is exposed on host port **5433** (container 5432) to avoid conflicts with a local work Postgres on 5432. ClickHouse remains on 8123/9000.
+
+### Dashboard (Laravel + Inertia)
+```bash
+cd apps/dashboard
+cp .env.example .env   # if needed
+php artisan migrate --seed
+php artisan serve --port=8001
+npm run dev
+```
+
+Login: `admin@seeyou.test` / `password`
+
+### Start all monorepo dev servers
 ```bash
 pnpm dev
 ```

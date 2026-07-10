@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        /* SeeYou dark theme — CSS variables (HSL without hsl()) */
+        --background: 222 47% 8%;       /* #0F172A */
+        --foreground: 210 40% 98%;      /* #F8FAFC */
+
+        --card: 217 33% 14%;            /* #1E293B */
+        --card-foreground: 210 40% 98%;
+
+        --popover: 217 33% 14%;
+        --popover-foreground: 210 40% 98%;
+
+        --primary: 143 71% 45%;         /* #22C55E CTA green */
+        --primary-foreground: 222 47% 8%;
+
+        --secondary: 215 25% 27%;       /* #334155 */
+        --secondary-foreground: 210 40% 98%;
+
+        --muted: 217 33% 17%;
+        --muted-foreground: 215 20% 65%;
+
+        --accent: 215 25% 27%;
+        --accent-foreground: 210 40% 98%;
+
+        --destructive: 0 84% 60%;
+        --destructive-foreground: 210 40% 98%;
+
+        --border: 217 33% 20%;
+        --input: 217 33% 18%;
+        --ring: 143 71% 45%;
+
+        --radius: 0.5rem;
+
+        --sidebar: 220 47% 7%;          /* slightly darker than bg */
+        --sidebar-foreground: 210 40% 98%;
+        --sidebar-border: 217 33% 18%;
+
+        --cta: 143 71% 45%;             /* #22C55E */
+    }
+
+    /* Force dark mode — observability panel is always dark */
+    html {
+        color-scheme: dark;
+    }
+
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground font-sans antialiased;
+    }
+
+    /* Smooth scrollbar */
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+        @apply bg-background;
+    }
+    ::-webkit-scrollbar-thumb {
+        @apply bg-secondary rounded-full;
+    }
+}

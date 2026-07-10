@@ -39,7 +39,8 @@ services:
     container_name: seeyou_postgres
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      # Host 5433 avoids conflict with local work Postgres on 5432
+      - "5433:5432"
     environment:
       POSTGRES_DB: seeyou
       POSTGRES_USER: seeyou

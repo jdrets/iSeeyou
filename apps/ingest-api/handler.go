@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/ClickHouse/clickhouse-go/v2"
 )
@@ -28,10 +29,13 @@ func trackHandler(db clickhouse.Conn) http.HandlerFunc {
 			return
 		}
 
-		// 2. Validar que los campos obligatorios estén presentes.
+		// 2. Validar campos obligatorios y normalizar timestamp.
 		if p.Type == "" {
 			writeError(w, http.StatusBadRequest, "type is required")
 			return
+		}
+		if p.Timestamp <= 0 {
+			p.Timestamp = time.Now().UnixMilli()
 		}
 
 		// 3. Delegar la inserción según el tipo de evento.

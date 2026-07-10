@@ -5,6 +5,7 @@ import {
     ChevronRight,
     RefreshCw,
     Search,
+    X,
 } from 'lucide-react';
 import { formatUtcTimestamp } from '@/lib/formatTimestamp';
 import AppLayout from '@/Layouts/AppLayout';
@@ -109,6 +110,8 @@ export default function LogsIndex() {
         to,
         page,
         perPage,
+        sessionId,
+        userId,
         setTypeFilter,
         setDatePreset,
         setCustomFrom,
@@ -116,6 +119,10 @@ export default function LogsIndex() {
         applyCustomRange,
         setPageFilter,
         setPerPageFilter,
+        setSessionFilter,
+        clearSessionFilter,
+        setUserFilter,
+        clearUserFilter,
         isCustomRange,
         hasPendingCustomRange,
     } = useLogsFilters();
@@ -131,6 +138,8 @@ export default function LogsIndex() {
         to,
         page,
         per_page: perPage,
+        session_id: sessionId ?? undefined,
+        user_id: userId ?? undefined,
     });
 
     const meta = data?.meta;
@@ -204,6 +213,30 @@ export default function LogsIndex() {
                     >
                         Apply
                     </Button>
+                ) : null}
+
+                {sessionId ? (
+                    <button
+                        type="button"
+                        onClick={clearSessionFilter}
+                        className="inline-flex max-w-full items-center gap-1.5 rounded-md border border-border bg-background/60 px-2 py-1 font-mono text-xs text-foreground transition-colors hover:bg-accent"
+                        title="Clear session filter"
+                    >
+                        <span className="truncate">session:{sessionId}</span>
+                        <X className="h-3 w-3 shrink-0 text-muted-foreground" />
+                    </button>
+                ) : null}
+
+                {userId ? (
+                    <button
+                        type="button"
+                        onClick={clearUserFilter}
+                        className="inline-flex max-w-full items-center gap-1.5 rounded-md border border-border bg-background/60 px-2 py-1 font-mono text-xs text-foreground transition-colors hover:bg-accent"
+                        title="Clear user filter"
+                    >
+                        <span className="truncate">user:{userId}</span>
+                        <X className="h-3 w-3 shrink-0 text-muted-foreground" />
+                    </button>
                 ) : null}
             </div>
 
@@ -310,6 +343,14 @@ export default function LogsIndex() {
             <LogDetailDrawer
                 selected={selected}
                 onClose={() => setSelected(null)}
+                onFilterBySession={(id) => {
+                    setSessionFilter(id);
+                    setSelected(null);
+                }}
+                onFilterByUser={(id) => {
+                    setUserFilter(id);
+                    setSelected(null);
+                }}
             />
         </AppLayout>
     );

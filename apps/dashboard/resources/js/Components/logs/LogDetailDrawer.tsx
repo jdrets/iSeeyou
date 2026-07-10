@@ -22,16 +22,22 @@ type SelectedLog = {
 type LogDetailDrawerProps = {
     selected: SelectedLog | null;
     onClose: () => void;
+    onFilterBySession?: (sessionId: string) => void;
+    onFilterByUser?: (userId: string) => void;
 };
 
 function Field({
     label,
     value,
     mono = false,
+    onClick,
+    copyable = false,
 }: {
     label: string;
     value?: string | null;
     mono?: boolean;
+    onClick?: () => void;
+    copyable?: boolean;
 }) {
     if (!value) {
         return null;
@@ -42,13 +48,39 @@ function Field({
             <dt className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
                 {label}
             </dt>
-            <dd
-                className={cn(
-                    'break-all text-sm text-foreground',
-                    mono && 'font-mono text-xs',
-                )}
-            >
-                {value}
+            <dd>
+                <span className="inline-flex max-w-full items-start gap-1 items-center">
+                    <span
+                        className={cn(
+                            'break-all text-sm text-foreground',
+                            mono && 'font-mono text-xs',
+                            onClick &&
+                                'cursor-pointer rounded-sm text-cta underline-offset-2 transition-colors hover:underline',
+                        )}
+                    >
+                        {onClick ? (
+                            <button
+                                type="button"
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                    onClick();
+                                }}
+                                className="max-w-full break-all text-left"
+                                title={`Filter by ${label.toLowerCase()}`}
+                            >
+                                {value}
+                            </button>
+                        ) : (
+                            value
+                        )}
+                    </span>
+                    {copyable ? (
+                        <CopyTextButton
+                            text={value}
+                            label={`Copy ${label.toLowerCase()}`}
+                        />
+                    ) : null}
+                </span>
             </dd>
         </div>
     );
@@ -97,6 +129,46 @@ function JsonBlock({ data }: { data: Record<string, unknown> | unknown[] }) {
                 {JSON.stringify(data, null, 2)}
             </pre>
         </div>
+    );
+}
+
+function CopyTextButton({
+    text,
+    label = 'Copy',
+}: {
+    text: string;
+    label?: string;
+}) {
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = async (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
+
+        try {
+            await navigator.clipboard.writeText(text);
+            setCopied(true);
+            window.setTimeout(() => setCopied(false), 1500);
+        } catch {
+            // ignore clipboard failures
+        }
+    };
+
+    return (
+        <Button
+            type="button"
+            size="sm"
+            variant="ghost"
+            onClick={handleCopy}
+            className="h-7 shrink-0 gap-1.5 px-2 text-xs text-muted-foreground"
+            title={label}
+        >
+            {copied ? (
+                <Check className="h-3.5 w-3.5 text-cta" />
+            ) : (
+                <Copy className="h-3.5 w-3.5" />
+            )}
+            <span className="sr-only">{copied ? 'Copied' : label}</span>
+        </Button>
     );
 }
 
@@ -150,6 +222,8 @@ function DrawerSkeleton() {
 export default function LogDetailDrawer({
     selected,
     onClose,
+    onFilterBySession,
+    onFilterByUser,
 }: LogDetailDrawerProps) {
     const open = selected !== null;
     const { data, isPending, isError } = useLogDetail(
@@ -240,11 +314,29 @@ export default function LogDetailDrawer({
                                     label="Session"
                                     value={data.session_id}
                                     mono
+                                    copyable
+                                    onClick={
+                                        onFilterBySession && data.session_id
+                                            ? () =>
+                                                  onFilterBySession(
+                                                      data.session_id,
+                                                  )
+                                            : undefined
+                                    }
                                 />
                                 <Field
                                     label="User"
                                     value={data.user_id}
                                     mono
+                                    copyable
+                                    onClick={
+                                        onFilterByUser && data.user_id
+                                            ? () =>
+                                                  onFilterByUser(
+                                                      data.user_id,
+                                                  )
+                                            : undefined
+                                    }
                                 />
                             </div>
 

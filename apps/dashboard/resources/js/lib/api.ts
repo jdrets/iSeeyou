@@ -78,6 +78,8 @@ export type LogsParams = {
     to?: string;
     page?: number;
     per_page?: number;
+    session_id?: string;
+    user_id?: string;
 };
 
 export type PaginationMeta = {

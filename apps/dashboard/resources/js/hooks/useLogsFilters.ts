@@ -21,6 +21,8 @@ type AppliedFilters = {
     customTo: string;
     page: number;
     perPage: number;
+    sessionId: string | null;
+    userId: string | null;
 };
 
 function parseType(value: string | null): LogTypeFilter {
@@ -49,6 +51,16 @@ function parsePositiveInt(
     return Math.floor(parsed);
 }
 
+function parseLogIdentifier(value: string | null): string | null {
+    if (!value) {
+        return null;
+    }
+
+    const trimmed = value.trim();
+
+    return /^[a-zA-Z0-9_-]{1,128}$/.test(trimmed) ? trimmed : null;
+}
+
 function parseInitialState(getParam: (key: string) => string | null): AppliedFilters {
     const type = parseType(getParam('type'));
     const range = isDateRangePreset(getParam('range') ?? '')
@@ -58,6 +70,8 @@ function parseInitialState(getParam: (key: string) => string | null): AppliedFil
     const perPage = parsePositiveInt(getParam('per_page'), DEFAULT_PER_PAGE, 100);
     const customFrom = getParam('from') ?? todayString();
     const customTo = getParam('to') ?? todayString();
+    const sessionId = parseLogIdentifier(getParam('session_id'));
+    const userId = parseLogIdentifier(getParam('user_id'));
 
     return {
         type,
@@ -66,6 +80,8 @@ function parseInitialState(getParam: (key: string) => string | null): AppliedFil
         customTo,
         page,
         perPage,
+        sessionId,
+        userId,
     };
 }
 
@@ -100,6 +116,8 @@ export function useLogsFilters() {
                     next.perPage === DEFAULT_PER_PAGE
                         ? undefined
                         : next.perPage,
+                session_id: next.sessionId ?? undefined,
+                user_id: next.userId ?? undefined,
             };
 
             const remove: string[] = [];
@@ -109,6 +127,14 @@ export function useLogsFilters() {
                 updates.to = next.customTo;
             } else {
                 remove.push('from', 'to');
+            }
+
+            if (!next.sessionId) {
+                remove.push('session_id');
+            }
+
+            if (!next.userId) {
+                remove.push('user_id');
             }
 
             setParams(updates, remove);
@@ -192,6 +218,36 @@ export function useLogsFilters() {
         [applyFilters, applied],
     );
 
+    const setSessionFilter = useCallback(
+        (sessionId: string | null) => {
+            applyFilters({
+                ...applied,
+                sessionId: parseLogIdentifier(sessionId),
+                page: 1,
+            });
+        },
+        [applyFilters, applied],
+    );
+
+    const clearSessionFilter = useCallback(() => {
+        applyFilters({ ...applied, sessionId: null, page: 1 });
+    }, [applyFilters, applied]);
+
+    const setUserFilter = useCallback(
+        (userId: string | null) => {
+            applyFilters({
+                ...applied,
+                userId: parseLogIdentifier(userId),
+                page: 1,
+            });
+        },
+        [applyFilters, applied],
+    );
+
+    const clearUserFilter = useCallback(() => {
+        applyFilters({ ...applied, userId: null, page: 1 });
+    }, [applyFilters, applied]);
+
     return {
         type: applied.type,
         range: applied.range,
@@ -201,6 +257,8 @@ export function useLogsFilters() {
         to: appliedRange.to,
         page: applied.page,
         perPage: applied.perPage,
+        sessionId: applied.sessionId,
+        userId: applied.userId,
         setTypeFilter,
         setDatePreset,
         setCustomFrom: setDraftCustomFrom,
@@ -208,6 +266,10 @@ export function useLogsFilters() {
         applyCustomRange,
         setPageFilter,
         setPerPageFilter,
+        setSessionFilter,
+        clearSessionFilter,
+        setUserFilter,
+        clearUserFilter,
         isCustomRange: applied.range === 'custom',
         hasPendingCustomRange:
             applied.range === 'custom' &&

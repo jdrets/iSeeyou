@@ -46,6 +46,8 @@ class AnalyticsService
         ?string $to = null,
         int $page = 1,
         int $perPage = 25,
+        ?string $sessionId = null,
+        ?string $userId = null,
     ): array {
         $page = max(1, $page);
         $perPage = min(100, max(1, $perPage));
@@ -53,8 +55,16 @@ class AnalyticsService
 
         [$fromDate, $toDate] = $this->resolveDateRange($from, $to);
         $normalizedType = $this->normalizeType($type);
+        $normalizedSessionId = $this->normalizeIdentifier($sessionId, 'session_id');
+        $normalizedUserId = $this->normalizeIdentifier($userId, 'user_id');
 
-        $unionSql = $this->unionSql($normalizedType, $fromDate, $toDate);
+        $unionSql = $this->unionSql(
+            $normalizedType,
+            $fromDate,
+            $toDate,
+            $normalizedSessionId,
+            $normalizedUserId,
+        );
 
         $total = (int) ($this->clickHouse->selectOne(
             "SELECT count() AS c FROM ({$unionSql})"
@@ -217,6 +227,33 @@ SQL
         return strtolower($id);
     }
 
+    private function normalizeIdentifier(?string $value, string $field): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        $value = trim($value);
+
+        if (! preg_match('/^[a-zA-Z0-9_-]{1,128}$/', $value)) {
+            throw new InvalidArgumentException("Invalid {$field}.");
+        }
+
+        return $value;
+    }
+
+    private function escapeSqlString(string $value): string
+    {
+        return str_replace("'", "''", $value);
+    }
+
+    private function equalityFilter(string $column, ?string $value): string
+    {
+        return $value !== null
+            ? " AND {$column} = '".$this->escapeSqlString($value)."'"
+            : '';
+    }
+
     /**
      * @return array<string, mixed>|list<mixed>
      */
@@ -263,9 +300,17 @@ SQL
         return "timestamp >= toDateTime64('{$fromSql}', 3, 'UTC') AND timestamp <= toDateTime64('{$toSql}', 3, 'UTC')";
     }
 
-    private function unionSql(?string $type, Carbon $from, Carbon $to): string
-    {
+    private function unionSql(
+        ?string $type,
+        Carbon $from,
+        Carbon $to,
+        ?string $sessionId = null,
+        ?string $userId = null,
+    ): string {
         $dateFilter = $this->dateFilterSql($from, $to);
+        $sessionFilter = $this->equalityFilter('session_id', $sessionId);
+        $userFilter = $this->equalityFilter('user_id', $userId);
+        $extraFilters = "{$sessionFilter}{$userFilter}";
 
         $errorsSql = <<<SQL
 SELECT
@@ -278,7 +323,7 @@ SELECT
     browser,
     os
 FROM errors
-WHERE {$dateFilter}
+WHERE {$dateFilter}{$extraFilters}
 SQL;
 
         $logsSql = <<<SQL
@@ -292,7 +337,7 @@ SELECT
     '' AS browser,
     '' AS os
 FROM events
-WHERE {$dateFilter}
+WHERE {$dateFilter}{$extraFilters}
 SQL;
 
         return match ($type) {

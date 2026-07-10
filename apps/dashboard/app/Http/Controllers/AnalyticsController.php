@@ -40,6 +40,8 @@ class AnalyticsController extends Controller
             'to' => ['nullable', 'date'],
             'page' => ['nullable', 'integer', 'min:1'],
             'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
+            'session_id' => ['nullable', 'string', 'max:128', 'regex:/^[a-zA-Z0-9_-]+$/'],
+            'user_id' => ['nullable', 'string', 'max:128', 'regex:/^[a-zA-Z0-9_-]+$/'],
         ]);
 
         try {
@@ -49,6 +51,8 @@ class AnalyticsController extends Controller
                 $validated['to'] ?? null,
                 (int) ($validated['page'] ?? 1),
                 (int) ($validated['per_page'] ?? 25),
+                $validated['session_id'] ?? null,
+                $validated['user_id'] ?? null,
             );
         } catch (InvalidArgumentException $exception) {
             return response()->json(['message' => $exception->getMessage()], 422);

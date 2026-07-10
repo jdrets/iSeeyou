@@ -6,7 +6,7 @@ import {
 } from './init'
 
 export type {
-  SeeYouConfig,
+  ISeeYouConfig,
   TrackPayload,
   ErrorPayload,
   WebVitalPayload,
@@ -18,8 +18,8 @@ export type {
 
 export { init, captureException, captureEvent, setUser }
 
-/** Public SDK surface — IIFE global is also `SeeYou` (methods hang off it). */
-export const SeeYou = {
+/** Public SDK surface — IIFE global is also `ISeeYou` (methods hang off it). */
+export const ISeeYou = {
   init,
   captureException,
   captureEvent,

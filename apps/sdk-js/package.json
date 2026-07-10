@@ -1,20 +1,20 @@
 {
-  "name": "@seeyou/sdk",
+  "name": "@iseeyou/sdk",
   "version": "0.1.0",
-  "description": "Lightweight browser SDK for SeeYou frontend observability",
+  "description": "Lightweight browser SDK for ISeeYou frontend observability",
   "type": "module",
-  "main": "./dist/seeyou.js",
-  "module": "./dist/seeyou.js",
+  "main": "./dist/iseeyou.js",
+  "module": "./dist/iseeyou.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/seeyou.js",
-      "default": "./dist/seeyou.js"
+      "import": "./dist/iseeyou.js",
+      "default": "./dist/iseeyou.js"
     }
   },
-  "unpkg": "./dist/seeyou.iife.js",
-  "jsdelivr": "./dist/seeyou.iife.js",
+  "unpkg": "./dist/iseeyou.iife.js",
+  "jsdelivr": "./dist/iseeyou.iife.js",
   "files": [
     "dist"
   ],

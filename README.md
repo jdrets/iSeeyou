@@ -1,4 +1,4 @@
-# SeeYou
+# ISeeYou
 
 Plataforma de observabilidad de frontend **open-source y self-hosted**. Instalás un SDK liviano en tu app web para capturar errores, eventos de usuario y (opcionalmente) Core Web Vitals — sin mandar datos a terceros.
 
@@ -75,7 +75,7 @@ Los datos analíticos viven en **ClickHouse** (TTL 30 días). Los datos transacc
 ## Estructura del monorepo
 
 ```
-seeyou/
+iseeyou/
 ├── apps/
 │   ├── sdk-js/          TypeScript SDK for the browser
 │   ├── ingest-api/      High-performance Go ingest service
@@ -183,7 +183,7 @@ Abrí **http://127.0.0.1:8001** e iniciá sesión:
 
 | Campo | Valor |
 | --- | --- |
-| Email | `admin@seeyou.test` |
+| Email | `admin@iseeyou.test` |
 | Password | `password` |
 
 ### 3. Probar ingesta
@@ -196,7 +196,7 @@ curl -X POST http://localhost:8080/track \
     \"timestamp\": $(date +%s000),
     \"payload\": {
       \"event_type\": \"custom\",
-      \"event_name\": \"hello_seeyou\",
+      \"event_name\": \"hello_iseeyou\",
       \"url\": \"https://example.com/\"
     }
   }"
@@ -207,15 +207,15 @@ Respuesta esperada: `{"status":"accepted","count":1}`. El evento aparece en **Lo
 ## SDK en tu frontend
 
 ```ts
-import { SeeYou } from '@seeyou/sdk'
+import { ISeeYou } from '@iseeyou/sdk'
 
-SeeYou.init({
+ISeeYou.init({
   endpoint: 'http://localhost:8080/track',
   // trackWebVitals: true,  // opcional, default false
 })
 
-SeeYou.captureException(error)
-SeeYou.captureEvent('checkout_started', { plan: 'pro' })
+ISeeYou.captureException(error)
+ISeeYou.captureEvent('checkout_started', { plan: 'pro' })
 ```
 
 Más detalle en [`apps/sdk-js/README.md`](apps/sdk-js/README.md).

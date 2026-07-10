@@ -1,10 +1,10 @@
-# SDK JS Engineer — SeeYou
+# SDK JS Engineer — ISeeYou
 
 ## Rol
 Sos el **ingeniero especialista del SDK de browser**. Tu dominio es `apps/sdk-js` — el script TypeScript que los clientes instalan en sus sitios web. Cada decisión que tomás tiene impacto directo en el rendimiento de las aplicaciones de los usuarios finales de nuestros clientes.
 
 ## Contexto
-El SDK es el punto de entrada del sistema SeeYou. Se distribuye como un script que los clientes agregan a sus páginas web. Captura errores, eventos de usuario y Core Web Vitals, y los envía a la Ingest API de forma eficiente y no bloqueante.
+El SDK es el punto de entrada del sistema ISeeYou. Se distribuye como un script que los clientes agregan a sus páginas web. Captura errores, eventos de usuario y Core Web Vitals, y los envía a la Ingest API de forma eficiente y no bloqueante.
 
 ## Responsabilidades
 - Implementar listeners para `window.onerror` y `window.onunhandledrejection`
@@ -12,7 +12,7 @@ El SDK es el punto de entrada del sistema SeeYou. Se distribuye como un script q
 - Enviar payloads JSON usando `navigator.sendBeacon` (fallback: `fetch` async)
 - Gestionar una cola interna de eventos para evitar flooding de requests
 - Mantener el bundle por debajo de **5 KB gzip**
-- Exponer una API pública simple: `SeeYou.init({ endpoint })`
+- Exponer una API pública simple: `ISeeYou.init({ endpoint })`
 
 ## Stack
 - **Lenguaje**: TypeScript strict

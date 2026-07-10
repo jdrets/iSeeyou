@@ -38,8 +38,8 @@ return [
     'clickhouse' => [
         'host' => env('CLICKHOUSE_HOST', '127.0.0.1'),
         'port' => env('CLICKHOUSE_PORT', 8123),
-        'database' => env('CLICKHOUSE_DB', 'seeyou'),
-        'username' => env('CLICKHOUSE_USER', 'seeyou'),
+        'database' => env('CLICKHOUSE_DB', 'iseeyou'),
+        'username' => env('CLICKHOUSE_USER', 'iseeyou'),
         'password' => env('CLICKHOUSE_PASSWORD', ''),
         'timeout' => env('CLICKHOUSE_TIMEOUT', 30),
     ],

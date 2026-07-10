@@ -1,8 +1,8 @@
 <clickhouse>
     <users>
-        <seeyou>
+        <iseeyou>
             <!-- En producción usar bcrypt hash en lugar de plaintext -->
-            <password>seeyou_secret</password>
+            <password>iseeyou_secret</password>
             <networks>
                 <ip>::/0</ip>
             </networks>
@@ -10,7 +10,7 @@
             <quota>default</quota>
             <access_management>1</access_management>
             <named_collection_control>1</named_collection_control>
-        </seeyou>
+        </iseeyou>
     </users>
 
     <profiles>

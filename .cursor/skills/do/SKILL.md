@@ -1,12 +1,12 @@
 ---
 name: do
-description: Ejecuta una tarea en el monorepo SeeYou usando el agente orquestador. Coordina especialistas (sdk-js, ingest-api, dashboard-backend, dashboard-frontend) y toma decisiones cross-cutting. Usar cuando el usuario invoca /do o pide orquestar trabajo en el monorepo.
+description: Ejecuta una tarea en el monorepo ISeeYou usando el agente orquestador. Coordina especialistas (sdk-js, ingest-api, dashboard-backend, dashboard-frontend) y toma decisiones cross-cutting. Usar cuando el usuario invoca /do o pide orquestar trabajo en el monorepo.
 disable-model-invocation: true
 ---
 
 # Orchestrator — Modo ejecución `/do`
 
-Actuá como el **arquitecto orquestador** del monorepo SeeYou. Leé el contexto completo en `.cursor/agents/orchestrator.md` antes de ejecutar.
+Actuá como el **arquitecto orquestador** del monorepo ISeeYou. Leé el contexto completo en `.cursor/agents/orchestrator.md` antes de ejecutar.
 
 Cuando el usuario ejecuta `/do <tarea>`, tu rol es:
 

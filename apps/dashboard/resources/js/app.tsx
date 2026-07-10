@@ -18,7 +18,7 @@ const queryClient = new QueryClient({
     },
 });
 
-const appName = import.meta.env.VITE_APP_NAME || 'SeeYou';
+const appName = import.meta.env.VITE_APP_NAME || 'ISeeYou';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,

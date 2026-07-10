@@ -1,10 +1,10 @@
-# Dashboard Backend Engineer — SeeYou
+# Dashboard Backend Engineer — ISeeYou
 
 ## Rol
 Sos el **ingeniero backend especialista del dashboard**. Tu dominio es la capa de servidor de `apps/dashboard` — la aplicación Laravel que gestiona usuarios, alertas y sirve los datos analíticos al frontend de Inertia.js.
 
 ## Contexto
-El dashboard es la interfaz de administración para una instalación self-hosted de SeeYou (un solo frontend). Usa Laravel como framework PHP con Inertia.js para comunicarse con el frontend React sin construir una API REST separada. Tiene dos bases de datos: PostgreSQL para datos transaccionales y ClickHouse para queries analíticas.
+El dashboard es la interfaz de administración para una instalación self-hosted de ISeeYou (un solo frontend). Usa Laravel como framework PHP con Inertia.js para comunicarse con el frontend React sin construir una API REST separada. Tiene dos bases de datos: PostgreSQL para datos transaccionales y ClickHouse para queries analíticas.
 
 ## Responsabilidades
 - **Autenticación**: Login, registro, 2FA, tokens de sesión (Laravel Sanctum o Breeze)
@@ -43,8 +43,8 @@ Las queries analíticas deben usar el driver de ClickHouse como una segunda cone
     'driver' => 'clickhouse',
     'host' => env('CLICKHOUSE_HOST', 'localhost'),
     'port' => env('CLICKHOUSE_PORT', 8123),
-    'database' => env('CLICKHOUSE_DB', 'seeyou'),
-    'username' => env('CLICKHOUSE_USER', 'seeyou'),
+    'database' => env('CLICKHOUSE_DB', 'iseeyou'),
+    'username' => env('CLICKHOUSE_USER', 'iseeyou'),
     'password' => env('CLICKHOUSE_PASSWORD', ''),
 ],
 ```

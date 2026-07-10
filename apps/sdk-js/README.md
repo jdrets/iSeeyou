@@ -1,6 +1,6 @@
-# @seeyou/sdk
+# @iseeyou/sdk
 
-SDK de browser para [SeeYou](https://github.com/) — captura errores, Core Web Vitals y eventos custom, y los envía a `POST /track` de ingest-api.
+SDK de browser para [ISeeYou](https://github.com/) — captura errores, Core Web Vitals y eventos custom, y los envía a `POST /track` de ingest-api.
 
 Bundle objetivo: **≤ 5 KB gzip**.
 
@@ -9,30 +9,30 @@ Bundle objetivo: **≤ 5 KB gzip**.
 ### npm / pnpm / yarn
 
 ```bash
-pnpm add @seeyou/sdk
+pnpm add @iseeyou/sdk
 ```
 
-En el monorepo SeeYou:
+En el monorepo ISeeYou:
 
 ```bash
-pnpm add @seeyou/sdk --filter tu-app
-# o dependency: "@seeyou/sdk": "workspace:*"
+pnpm add @iseeyou/sdk --filter tu-app
+# o dependency: "@iseeyou/sdk": "workspace:*"
 ```
 
 ```ts
-import { SeeYou } from '@seeyou/sdk'
-// también: import { init, captureEvent } from '@seeyou/sdk'
+import { ISeeYou } from '@iseeyou/sdk'
+// también: import { init, captureEvent } from '@iseeyou/sdk'
 
-SeeYou.init({
+ISeeYou.init({
   endpoint: 'http://localhost:8080/track',
   // trackWebVitals: true, // opcional, default false
   // sampleRate: 0.1,
   // userId: 'user_123',
 })
 
-SeeYou.setUser(currentUser?.id ?? null)
-SeeYou.captureEvent('checkout_started', { plan: 'pro' })
-SeeYou.captureException(err, { route: '/checkout' })
+ISeeYou.setUser(currentUser?.id ?? null)
+ISeeYou.captureEvent('checkout_started', { plan: 'pro' })
+ISeeYou.captureException(err, { route: '/checkout' })
 ```
 
 Llamá `init` una sola vez en el entry de la app (`main.tsx`, layout raíz, etc.).
@@ -40,22 +40,22 @@ Llamá `init` una sola vez en el entry de la app (`main.tsx`, layout raíz, etc.
 ### Script tag (IIFE)
 
 ```html
-<script src="/path/to/seeyou.iife.js" defer></script>
+<script src="/path/to/iseeyou.iife.js" defer></script>
 <script>
-  SeeYou.init({ endpoint: 'https://ingest.example.com/track' })
+  ISeeYou.init({ endpoint: 'https://ingest.example.com/track' })
 </script>
 ```
 
-Artefacto local tras `pnpm build`: `dist/seeyou.iife.js`.
+Artefacto local tras `pnpm build`: `dist/iseeyou.iife.js`.
 
 ## API
 
 | Método | Descripción |
 |--------|-------------|
-| `SeeYou.init({ endpoint, sampleRate?, userId?, trackWebVitals? })` | Arranca listeners y transporte |
-| `SeeYou.captureException(error, extra?)` | Error manual |
-| `SeeYou.captureEvent(name, properties?)` | Evento custom |
-| `SeeYou.setUser(userId \| null)` | Asocia `user_id` a eventos siguientes |
+| `ISeeYou.init({ endpoint, sampleRate?, userId?, trackWebVitals? })` | Arranca listeners y transporte |
+| `ISeeYou.captureException(error, extra?)` | Error manual |
+| `ISeeYou.captureEvent(name, properties?)` | Evento custom |
+| `ISeeYou.setUser(userId \| null)` | Asocia `user_id` a eventos siguientes |
 
 Automático tras `init`:
 
@@ -80,8 +80,8 @@ ingest-api también acepta un evento suelto (sin `events`) para curls y clientes
 
 ```bash
 pnpm install
-pnpm --filter @seeyou/sdk test
-pnpm --filter @seeyou/sdk build
+pnpm --filter @iseeyou/sdk test
+pnpm --filter @iseeyou/sdk build
 ```
 
-El build falla si el gzip de `dist/seeyou.js` o `dist/seeyou.iife.js` supera 5 KB.
+El build falla si el gzip de `dist/iseeyou.js` o `dist/iseeyou.iife.js` supera 5 KB.

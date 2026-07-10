@@ -1,6 +1,6 @@
-# SeeYou — Comandos de desarrollo
+# ISeeYou — Comandos de desarrollo
 
-Cheatsheet con los comandos más usados en local. Ejecutá todo desde la raíz del repo (`seeyou/`).
+Cheatsheet con los comandos más usados en local. Ejecutá todo desde la raíz del repo (`iseeyou/`).
 
 ---
 
@@ -20,9 +20,9 @@ docker compose up --build ingest-api -d
 docker ps
 
 # Ver logs de un servicio
-docker logs seeyou_ingest_api
-docker logs seeyou_clickhouse
-docker logs -f seeyou_ingest_api   # follow en vivo
+docker logs iseeyou_ingest_api
+docker logs iseeyou_clickhouse
+docker logs -f iseeyou_ingest_api   # follow en vivo
 
 # Bajar servicios (conserva datos)
 docker compose down
@@ -139,9 +139,9 @@ go build ./...
 
 # Correr (ClickHouse debe estar levantado en Docker)
 export CLICKHOUSE_ADDR=localhost:9000
-export CLICKHOUSE_DB=seeyou
-export CLICKHOUSE_USER=seeyou
-export CLICKHOUSE_PASSWORD=seeyou_secret
+export CLICKHOUSE_DB=iseeyou
+export CLICKHOUSE_USER=iseeyou
+export CLICKHOUSE_PASSWORD=iseeyou_secret
 go run .
 ```
 
@@ -150,11 +150,11 @@ go run .
 ## ClickHouse — Consola SQL
 
 ```bash
-# Entrar al cliente (importante: usar --database seeyou)
-docker exec -it seeyou_clickhouse clickhouse-client \
-  --user seeyou \
-  --password seeyou_secret \
-  --database seeyou
+# Entrar al cliente (importante: usar --database iseeyou)
+docker exec -it iseeyou_clickhouse clickhouse-client \
+  --user iseeyou \
+  --password iseeyou_secret \
+  --database iseeyou
 ```
 
 Dentro del cliente:
@@ -180,10 +180,10 @@ Salir del cliente: `exit` o `Ctrl+D`.
 ### Consultas one-liner (sin entrar al cliente)
 
 ```bash
-docker exec seeyou_clickhouse clickhouse-client \
-  --user seeyou \
-  --password seeyou_secret \
-  --database seeyou \
+docker exec iseeyou_clickhouse clickhouse-client \
+  --user iseeyou \
+  --password iseeyou_secret \
+  --database iseeyou \
   --query "SELECT message, error_type FROM errors ORDER BY timestamp DESC LIMIT 5"
 ```
 
@@ -192,9 +192,9 @@ docker exec seeyou_clickhouse clickhouse-client \
 Los datos pueden tardar ~200ms en aparecer. Forzá el flush:
 
 ```bash
-docker exec seeyou_clickhouse clickhouse-client \
-  --user seeyou \
-  --password seeyou_secret \
+docker exec iseeyou_clickhouse clickhouse-client \
+  --user iseeyou \
+  --password iseeyou_secret \
   --query "SYSTEM FLUSH ASYNC INSERT QUEUE"
 ```
 
@@ -205,7 +205,7 @@ docker exec seeyou_clickhouse clickhouse-client \
 curl http://127.0.0.1:8123/ping
 
 # Query vía HTTP
-curl "http://127.0.0.1:8123/?user=seeyou&password=seeyou_secret&database=seeyou" \
+curl "http://127.0.0.1:8123/?user=iseeyou&password=iseeyou_secret&database=iseeyou" \
   --data "SELECT count() FROM errors"
 
 # Consola web en el navegador
@@ -219,9 +219,9 @@ open http://127.0.0.1:8123/play
 Si cambiaste las tablas y ya tenías datos viejos (ej. con `project_id`):
 
 ```bash
-docker exec -i seeyou_clickhouse clickhouse-client \
-  --user seeyou \
-  --password seeyou_secret \
+docker exec -i iseeyou_clickhouse clickhouse-client \
+  --user iseeyou \
+  --password iseeyou_secret \
   --multiquery \
   < infra/clickhouse/init/002_remove_project_id.sql
 ```
@@ -247,9 +247,9 @@ El schema en `infra/clickhouse/init/001_create_tables.sql` ya incluye TTL de 30 
 ### Instalación existente (cambiar de 90 → 30 días)
 
 ```bash
-docker exec -i seeyou_clickhouse clickhouse-client \
-  --user seeyou \
-  --password seeyou_secret \
+docker exec -i iseeyou_clickhouse clickhouse-client \
+  --user iseeyou \
+  --password iseeyou_secret \
   --multiquery \
   < infra/clickhouse/init/003_ttl_30_days.sql
 ```
@@ -259,8 +259,8 @@ docker exec -i seeyou_clickhouse clickhouse-client \
 ### Verificar TTL activo
 
 ```bash
-docker exec seeyou_clickhouse clickhouse-client \
-  --user seeyou --password seeyou_secret --database seeyou \
+docker exec iseeyou_clickhouse clickhouse-client \
+  --user iseeyou --password iseeyou_secret --database iseeyou \
   --query "SHOW CREATE TABLE errors"
 ```
 
@@ -284,14 +284,14 @@ ALTER TABLE events MODIFY TTL date + INTERVAL 60 DAY;
 |----------|-----------------|
 | Host     | `127.0.0.1`     |
 | Port     | `8123`          |
-| User     | `seeyou`        |
-| Password | `seeyou_secret` |
-| Database | `seeyou`        |
+| User     | `iseeyou`        |
+| Password | `iseeyou_secret` |
+| Database | `iseeyou`        |
 
 URL JDBC (si DataGrip falla con el driver nuevo):
 
 ```text
-jdbc:clickhouse://127.0.0.1:8123/seeyou?user=seeyou&password=seeyou_secret&ignore_unknown_config_key=true
+jdbc:clickhouse://127.0.0.1:8123/iseeyou?user=iseeyou&password=iseeyou_secret&ignore_unknown_config_key=true
 ```
 
 Usar puerto **8123** (HTTP), no 9000 (nativo).
@@ -313,15 +313,15 @@ Usar puerto **8123** (HTTP), no 9000 (nativo).
 
 ### `accepted` pero no veo el dato en ClickHouse
 
-1. **Base incorrecta** — conectate a `seeyou`, no a `default` (`USE seeyou;`).
+1. **Base incorrecta** — conectate a `iseeyou`, no a `default` (`USE iseeyou;`).
 2. **Timestamp viejo** — los ejemplos con `1720000000000` guardan filas en **2024**. Buscá por mensaje o ordená ASC:
    ```sql
    SELECT timestamp, message FROM errors ORDER BY timestamp ASC;
    ```
 3. **Async inserts** — puede tardar ~200ms; forzá flush:
    ```bash
-   docker exec seeyou_clickhouse clickhouse-client \
-     --user seeyou --password seeyou_secret \
+   docker exec iseeyou_clickhouse clickhouse-client \
+     --user iseeyou --password iseeyou_secret \
      --query "SYSTEM FLUSH ASYNC INSERT QUEUE"
    ```
 
@@ -335,10 +335,10 @@ docker compose up --build ingest-api -d
 
 ### `SHOW TABLES` devuelve 0 filas en ClickHouse
 
-Estás en la base `default`. Usá `--database seeyou` o dentro del cliente:
+Estás en la base `default`. Usá `--database iseeyou` o dentro del cliente:
 
 ```sql
-USE seeyou;
+USE iseeyou;
 ```
 
 ### ClickHouse unhealthy al levantar Docker

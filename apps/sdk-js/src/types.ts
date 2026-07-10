@@ -3,7 +3,7 @@ export type TrackType = 'error' | 'web_vital' | 'event'
 export type VitalName = 'LCP' | 'INP' | 'CLS' | 'TTFB' | 'FCP'
 export type VitalRating = 'good' | 'needs-improvement' | 'poor'
 
-export interface SeeYouConfig {
+export interface ISeeYouConfig {
   /** Full URL to ingest-api POST /track */
   endpoint: string
   /** 0–1; events below the roll are dropped. Default 1. */

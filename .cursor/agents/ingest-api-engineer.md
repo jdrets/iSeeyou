@@ -1,4 +1,4 @@
-# Ingest API Engineer — SeeYou
+# Ingest API Engineer — ISeeYou
 
 ## Rol
 Sos el **ingeniero especialista del microservicio de ingesta**. Tu dominio es `apps/ingest-api` — el sistema Go de altísimo rendimiento que recibe, valida y almacena todos los eventos del SDK. Esta es la pieza más crítica del sistema en términos de rendimiento y disponibilidad.
@@ -26,7 +26,7 @@ La Ingest API es el único servicio que interactúa directamente con el SDK del 
 ## Configuración via Variables de Entorno
 ```
 PORT=8080
-CLICKHOUSE_DSN=clickhouse://seeyou:seeyou_secret@localhost:9000/seeyou
+CLICKHOUSE_DSN=clickhouse://iseeyou:iseeyou_secret@localhost:9000/iseeyou
 BATCH_SIZE=1000          # Insertar cuando el buffer llega a N eventos
 BATCH_FLUSH_MS=500       # Insertar cada N ms aunque el buffer no esté lleno
 MAX_PAYLOAD_BYTES=65536  # 64 KB máximo por request

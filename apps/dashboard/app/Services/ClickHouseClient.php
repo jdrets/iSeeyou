@@ -24,8 +24,8 @@ class ClickHouseClient
         $port = config('services.clickhouse.port', 8123);
 
         $this->baseUrl = "http://{$host}:{$port}";
-        $this->database = (string) config('services.clickhouse.database', 'seeyou');
-        $this->username = (string) config('services.clickhouse.username', 'seeyou');
+        $this->database = (string) config('services.clickhouse.database', 'iseeyou');
+        $this->username = (string) config('services.clickhouse.username', 'iseeyou');
         $this->password = (string) config('services.clickhouse.password', '');
         $this->timeoutSeconds = (int) config('services.clickhouse.timeout', 30);
     }

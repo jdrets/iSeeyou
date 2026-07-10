@@ -5,16 +5,16 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
-      name: 'SeeYou',
+      name: 'ISeeYou',
       formats: ['es', 'iife'],
-      fileName: (format) => (format === 'es' ? 'seeyou.js' : 'seeyou.iife.js'),
+      fileName: (format) => (format === 'es' ? 'iseeyou.js' : 'iseeyou.iife.js'),
     },
     target: 'es2017',
     minify: 'esbuild',
     sourcemap: true,
     rollupOptions: {
       output: {
-        // Named exports → IIFE global SeeYou.init / SeeYou.captureEvent
+        // Named exports → IIFE global ISeeYou.init / ISeeYou.captureEvent
         exports: 'named',
       },
     },

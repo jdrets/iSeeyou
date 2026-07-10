@@ -19,9 +19,9 @@ func newDB() (clickhouse.Conn, error) {
 	conn, err := clickhouse.Open(&clickhouse.Options{
 		Addr: []string{addr},
 		Auth: clickhouse.Auth{
-			Database: getEnv("CLICKHOUSE_DB", "seeyou"),
-			Username: getEnv("CLICKHOUSE_USER", "seeyou"),
-			Password: getEnv("CLICKHOUSE_PASSWORD", "seeyou_secret"),
+			Database: getEnv("CLICKHOUSE_DB", "iseeyou"),
+			Username: getEnv("CLICKHOUSE_USER", "iseeyou"),
+			Password: getEnv("CLICKHOUSE_PASSWORD", "iseeyou_secret"),
 		},
 		// Estos settings sobreescriben los del servidor para esta conexión.
 		// async_insert=1          → acumula filas antes de escribir (alto throughput).

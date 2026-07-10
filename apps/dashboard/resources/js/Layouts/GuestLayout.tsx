@@ -12,7 +12,7 @@ export default function Guest({ children }: PropsWithChildren) {
             <div className="relative z-10">
                 <Link href="/" className="flex cursor-pointer items-center gap-2">
                     <ApplicationLogo className="h-12 w-12 fill-current text-cta" />
-                    <span className="text-lg font-semibold text-foreground">SeeYou</span>
+                    <span className="text-lg font-semibold text-foreground">ISeeYou</span>
                 </Link>
             </div>
 

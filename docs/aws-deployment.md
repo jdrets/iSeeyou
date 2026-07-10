@@ -1,6 +1,6 @@
-# SeeYou — Guía de deploy en AWS
+# ISeeYou — Guía de deploy en AWS
 
-Guía paso a paso para levantar SeeYou en un **EC2 self-hosted** (alineado con el diseño del proyecto: 2–4 vCPU, 4–8 GB RAM).
+Guía paso a paso para levantar ISeeYou en un **EC2 self-hosted** (alineado con el diseño del proyecto: 2–4 vCPU, 4–8 GB RAM).
 
 ## Arquitectura en producción
 
@@ -36,7 +36,7 @@ El SDK del browser apunta a `https://ingest.tudominio.com/track`. El dashboard s
 
 ### Tipo de instancia recomendado
 
-Para una **primera prueba en producción** con poco tráfico, no hace falta una máquina grande. Priorizá **Graviton (ARM, familia `t4g`)**: suele costar ~20 % menos que `t3` equivalente y el stack de SeeYou corre bien en ARM (Docker images de ClickHouse, Postgres y el build de Go son multi-arch).
+Para una **primera prueba en producción** con poco tráfico, no hace falta una máquina grande. Priorizá **Graviton (ARM, familia `t4g`)**: suele costar ~20 % menos que `t3` equivalente y el stack de ISeeYou corre bien en ARM (Docker images de ClickHouse, Postgres y el build de Go son multi-arch).
 
 | Perfil | Instancia | vCPU | RAM | Cuándo usarla |
 | ------ | --------- | ---- | --- | ------------- |
@@ -132,10 +132,10 @@ sudo apt install -y certbot python3-certbot-nginx
 ## 3. Clonar el repo
 
 ```bash
-sudo mkdir -p /var/www/seeyou
-sudo chown $USER:$USER /var/www/seeyou
-git clone https://github.com/TU_ORG/seeyou.git /var/www/seeyou
-cd /var/www/seeyou
+sudo mkdir -p /var/www/iseeyou
+sudo chown $USER:$USER /var/www/iseeyou
+git clone https://github.com/TU_ORG/iseeyou.git /var/www/iseeyou
+cd /var/www/iseeyou
 ```
 
 ---
@@ -148,7 +148,7 @@ cd /var/www/seeyou
 
 ### Cambiar credenciales por defecto
 
-Editá `docker-compose.yml` y reemplazá `seeyou_secret` por contraseñas fuertes en:
+Editá `docker-compose.yml` y reemplazá `iseeyou_secret` por contraseñas fuertes en:
 
 - `clickhouse` → `CLICKHOUSE_PASSWORD`
 - `postgres` → `POSTGRES_PASSWORD`
@@ -161,7 +161,7 @@ Editá `docker-compose.yml` y reemplazá `seeyou_secret` por contraseñas fuerte
 ### Levantar servicios
 
 ```bash
-cd /var/www/seeyou
+cd /var/www/iseeyou
 docker compose up --build -d
 docker compose ps
 ```
@@ -186,7 +186,7 @@ Los volúmenes `clickhouse_data`, `postgres_data` y `clickhouse_logs` sobreviven
 ## 5. Dashboard Laravel
 
 ```bash
-cd /var/www/seeyou/apps/dashboard
+cd /var/www/iseeyou/apps/dashboard
 cp .env.example .env
 ```
 
@@ -195,7 +195,7 @@ cp .env.example .env
 ### `.env` de producción (ejemplo)
 
 ```dotenv
-APP_NAME=SeeYou
+APP_NAME=ISeeYou
 APP_ENV=production
 APP_KEY=                    # generar con artisan key:generate
 APP_DEBUG=false
@@ -204,14 +204,14 @@ APP_URL=https://app.tudominio.com
 DB_CONNECTION=pgsql
 DB_HOST=127.0.0.1
 DB_PORT=5433
-DB_DATABASE=seeyou
-DB_USERNAME=seeyou
+DB_DATABASE=iseeyou
+DB_USERNAME=iseeyou
 DB_PASSWORD=TU_PASSWORD_POSTGRES
 
 CLICKHOUSE_HOST=127.0.0.1
 CLICKHOUSE_PORT=8123
-CLICKHOUSE_DB=seeyou
-CLICKHOUSE_USER=seeyou
+CLICKHOUSE_DB=iseeyou
+CLICKHOUSE_USER=iseeyou
 CLICKHOUSE_PASSWORD=TU_PASSWORD_CLICKHOUSE
 CLICKHOUSE_TIMEOUT=30
 
@@ -260,7 +260,7 @@ sudo chmod -R ug+rwx storage bootstrap/cache
 
 
 
-### Dashboard — `/etc/nginx/sites-available/seeyou-app`
+### Dashboard — `/etc/nginx/sites-available/iseeyou-app`
 
 ```nginx
 server {
@@ -272,7 +272,7 @@ server {
 server {
     listen 443 ssl http2;
     server_name app.tudominio.com;
-    root /var/www/seeyou/apps/dashboard/public;
+    root /var/www/iseeyou/apps/dashboard/public;
 
     index index.php;
     charset utf-8;
@@ -300,7 +300,7 @@ server {
 
 
 
-### ingest-api — `/etc/nginx/sites-available/seeyou-ingest`
+### ingest-api — `/etc/nginx/sites-available/iseeyou-ingest`
 
 ```nginx
 server {
@@ -333,8 +333,8 @@ server {
 Activar sitios:
 
 ```bash
-sudo ln -s /etc/nginx/sites-available/seeyou-app /etc/nginx/sites-enabled/
-sudo ln -s /etc/nginx/sites-available/seeyou-ingest /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/iseeyou-app /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/iseeyou-ingest /etc/nginx/sites-enabled/
 sudo nginx -t && sudo systemctl reload nginx
 ```
 
@@ -357,9 +357,9 @@ Renovación automática: certbot instala un timer systemd.
 En la app que querés monitorear:
 
 ```js
-import SeeYou from '@seeyou/sdk' // o el bundle que publiques
+import ISeeYou from '@iseeyou/sdk' // o el bundle que publiques
 
-SeeYou.init({
+ISeeYou.init({
   endpoint: 'https://ingest.tudominio.com/track',
   sampleRate: 1,
   userId: 'optional-user-id',
@@ -395,7 +395,7 @@ Luego entrá al dashboard en `https://app.tudominio.com/logs` y confirmá que el
 Script típico después de `git pull`:
 
 ```bash
-cd /var/www/seeyou
+cd /var/www/iseeyou
 
 # Infra + ingest-api
 docker compose up --build -d
@@ -423,8 +423,8 @@ sudo systemctl reload php8.3-fpm
 ### PostgreSQL (usuarios, sesiones, alertas)
 
 ```bash
-docker exec seeyou_postgres pg_dump -U seeyou seeyou \
-  | gzip > /var/backups/seeyou-postgres-$(date +%F).sql.gz
+docker exec iseeyou_postgres pg_dump -U iseeyou iseeyou \
+  | gzip > /var/backups/iseeyou-postgres-$(date +%F).sql.gz
 ```
 
 
@@ -436,9 +436,9 @@ Opción simple: snapshot del volumen EBS en horario de bajo tráfico.
 Consulta de tablas para export manual:
 
 ```bash
-docker exec seeyou_clickhouse clickhouse-client \
-  --user seeyou --password TU_PASSWORD \
-  --database seeyou \
+docker exec iseeyou_clickhouse clickhouse-client \
+  --user iseeyou --password TU_PASSWORD \
+  --database iseeyou \
   --query "SELECT count() FROM errors"
 ```
 
@@ -452,7 +452,7 @@ sudo crontab -e
 ```
 
 ```
-0 3 * * * docker exec seeyou_postgres pg_dump -U seeyou seeyou | gzip > /var/backups/seeyou-pg-$(date +\%F).sql.gz
+0 3 * * * docker exec iseeyou_postgres pg_dump -U iseeyou iseeyou | gzip > /var/backups/iseeyou-pg-$(date +\%F).sql.gz
 ```
 
 Subí los dumps a S3 con `aws s3 cp` si querés off-site backup.
@@ -464,7 +464,7 @@ Subí los dumps a S3 con `aws s3 cp` si querés off-site backup.
 ## 10. Checklist de seguridad
 
 - [ ] `APP_DEBUG=false` en producción
-- [ ] Contraseñas distintas a `seeyou_secret`
+- [ ] Contraseñas distintas a `iseeyou_secret`
 - [ ] Security Group sin puertos de DB/analytics expuestos
 - [ ] HTTPS en app e ingest
 - [ ] `SESSION_SECURE_COOKIE=true`
@@ -492,8 +492,8 @@ Subí los dumps a S3 con `aws s3 cp` si querés off-site backup.
 Logs útiles:
 
 ```bash
-docker logs seeyou_ingest_api --tail 100
-docker logs seeyou_clickhouse --tail 50
+docker logs iseeyou_ingest_api --tail 100
+docker logs iseeyou_clickhouse --tail 50
 sudo tail -f /var/log/nginx/error.log
 sudo journalctl -u php8.3-fpm -f
 ```

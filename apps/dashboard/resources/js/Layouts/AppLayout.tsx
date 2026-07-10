@@ -47,7 +47,7 @@ export default function AppLayout({ children }: PropsWithChildren) {
                         <Activity className="h-4 w-4 text-cta" />
                     </div>
                     <span className="text-sm font-semibold tracking-tight text-foreground">
-                        SeeYou
+                        ISeeYou
                     </span>
                 </div>
 

@@ -86,7 +86,7 @@ describe('Transport', () => {
   })
 })
 
-describe('SeeYou init + capture', () => {
+describe('ISeeYou init + capture', () => {
   const sent: TrackPayload[] = []
 
   beforeEach(() => {

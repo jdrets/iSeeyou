@@ -3,13 +3,13 @@ import { Transport } from './transport'
 import type {
   ErrorPayload,
   EventPayload,
-  SeeYouConfig,
+  ISeeYouConfig,
   TrackPayload,
   WebVitalPayload,
 } from './types'
 import { attachErrorListeners } from './listeners/errors'
 
-let config: SeeYouConfig | null = null
+let config: ISeeYouConfig | null = null
 let userId: string | undefined
 let transport: Transport | null = null
 let initialized = false
@@ -107,9 +107,9 @@ function maybeAttachVitalListeners(): void {
 }
 
 /** Initialize the SDK once. Subsequent calls update config only. */
-export function init(options: SeeYouConfig): void {
+export function init(options: ISeeYouConfig): void {
   if (!options?.endpoint) {
-    throw new Error('SeeYou.init: endpoint is required')
+    throw new Error('ISeeYou.init: endpoint is required')
   }
 
   config = {

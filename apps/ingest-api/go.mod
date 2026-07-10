@@ -1,4 +1,4 @@
-module seeyou/ingest-api
+module iseeyou/ingest-api
 
 go 1.26.5
 

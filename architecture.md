@@ -1,7 +1,7 @@
-# SeeYou — Architecture Overview
+# ISeeYou — Architecture Overview
 
 ## Purpose
-SeeYou is an open-source, self-hosted frontend observability platform. It allows teams to install a lightweight SDK on their web applications to capture uncaught exceptions, user events, and Core Web Vitals in real time — without sending data to third-party services.
+ISeeYou is an open-source, self-hosted frontend observability platform. It allows teams to install a lightweight SDK on their web applications to capture uncaught exceptions, user events, and Core Web Vitals in real time — without sending data to third-party services.
 
 ## System Architecture
 
@@ -51,7 +51,7 @@ SeeYou is an open-source, self-hosted frontend observability platform. It allows
 ## Monorepo Structure
 
 ```
-seeyou/
+iseeyou/
 ├── apps/
 │   ├── sdk-js/          TypeScript SDK for the browser
 │   ├── ingest-api/      High-performance Go ingest service
@@ -112,7 +112,7 @@ php artisan serve --port=8001
 npm run dev
 ```
 
-Login: `admin@seeyou.test` / `password`
+Login: `admin@iseeyou.test` / `password`
 
 ### Start all monorepo dev servers
 ```bash

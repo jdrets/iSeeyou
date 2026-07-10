@@ -1,17 +1,17 @@
 -- =========================================================
 -- Migración: eliminar project_id (instalaciones existentes)
 -- Ejecutar manualmente si ya tenías tablas con el schema anterior:
---   docker exec -i seeyou_clickhouse clickhouse-client \
---     --user seeyou --password seeyou_secret --multiquery < infra/clickhouse/init/002_remove_project_id.sql
+--   docker exec -i iseeyou_clickhouse clickhouse-client \
+--     --user iseeyou --password iseeyou_secret --multiquery < infra/clickhouse/init/002_remove_project_id.sql
 -- =========================================================
 
-DROP TABLE IF EXISTS seeyou.errors;
-DROP TABLE IF EXISTS seeyou.web_vitals;
-DROP TABLE IF EXISTS seeyou.events;
+DROP TABLE IF EXISTS iseeyou.errors;
+DROP TABLE IF EXISTS iseeyou.web_vitals;
+DROP TABLE IF EXISTS iseeyou.events;
 
 -- Recrear con schema sin project_id (mismo contenido que 001_create_tables.sql)
 
-CREATE TABLE seeyou.errors
+CREATE TABLE iseeyou.errors
 (
     event_id      UUID          DEFAULT generateUUIDv4(),
     timestamp     DateTime64(3) DEFAULT now64(),
@@ -34,7 +34,7 @@ ORDER BY (date, timestamp)
 TTL date + INTERVAL 30 DAY
 SETTINGS index_granularity = 8192;
 
-CREATE TABLE seeyou.web_vitals
+CREATE TABLE iseeyou.web_vitals
 (
     event_id      UUID          DEFAULT generateUUIDv4(),
     timestamp     DateTime64(3) DEFAULT now64(),
@@ -55,7 +55,7 @@ ORDER BY (date, metric_name, timestamp)
 TTL date + INTERVAL 30 DAY
 SETTINGS index_granularity = 8192;
 
-CREATE TABLE seeyou.events
+CREATE TABLE iseeyou.events
 (
     event_id      UUID          DEFAULT generateUUIDv4(),
     timestamp     DateTime64(3) DEFAULT now64(),

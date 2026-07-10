@@ -1,4 +1,4 @@
-const SESSION_KEY = 'seeyou_sid'
+const SESSION_KEY = 'iseeyou_sid'
 
 function uuid(): string {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {

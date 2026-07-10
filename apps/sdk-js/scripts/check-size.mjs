@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 
 const MAX_GZIP = 5 * 1024
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const files = ['dist/seeyou.js', 'dist/seeyou.iife.js']
+const files = ['dist/iseeyou.js', 'dist/iseeyou.iife.js']
 
 let failed = false
 

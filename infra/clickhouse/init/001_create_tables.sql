@@ -1,15 +1,15 @@
 -- =========================================================
--- SeeYou — Schema inicial de ClickHouse
+-- ISeeYou — Schema inicial de ClickHouse
 -- Motor: MergeTree con particionado por fecha
 -- Self-hosted: un solo frontend, sin project_id
 -- =========================================================
 
-CREATE DATABASE IF NOT EXISTS seeyou;
+CREATE DATABASE IF NOT EXISTS iseeyou;
 
 -- ─────────────────────────────────────────────────────────
 -- Tabla de eventos de error (window.onerror / unhandledrejection)
 -- ─────────────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS seeyou.errors
+CREATE TABLE IF NOT EXISTS iseeyou.errors
 (
     event_id      UUID          DEFAULT generateUUIDv4(),
     timestamp     DateTime64(3) DEFAULT now64(),
@@ -46,7 +46,7 @@ SETTINGS index_granularity = 8192;
 -- ─────────────────────────────────────────────────────────
 -- Tabla de Core Web Vitals (LCP, FID/INP, CLS, TTFB, FCP)
 -- ─────────────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS seeyou.web_vitals
+CREATE TABLE IF NOT EXISTS iseeyou.web_vitals
 (
     event_id      UUID          DEFAULT generateUUIDv4(),
     timestamp     DateTime64(3) DEFAULT now64(),
@@ -79,7 +79,7 @@ SETTINGS index_granularity = 8192;
 -- ─────────────────────────────────────────────────────────
 -- Tabla de eventos de usuario genéricos (clicks, page views, etc.)
 -- ─────────────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS seeyou.events
+CREATE TABLE IF NOT EXISTS iseeyou.events
 (
     event_id      UUID          DEFAULT generateUUIDv4(),
     timestamp     DateTime64(3) DEFAULT now64(),
